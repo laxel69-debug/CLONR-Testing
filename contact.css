@@ -1,0 +1,80 @@
+/* Contact Section Container */
+.contact {
+    width: 100%;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+  
+  /* Contact Title */
+  .contact .title {
+    font-size: 28px;
+    text-align: center;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  /* Form Input Fields */
+  .contact .box {
+    width: 95%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  /* Focus Effect */
+  .contact .box:focus {
+    border-color: #000;
+    outline: none;
+  }
+  
+  /* Textarea Styling */
+  .contact textarea.box {
+    resize: none; /* Disable resizing */
+  }
+  
+  /* Submit Button */
+  .contact .btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Hover Effect */
+  .contact .btn:hover {
+    background-color: #b30000;
+  }
+  
+  /* Form Validation Message */
+  .message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .message .fas {
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  /* Link Styling */
+  a {
+    color: #721c24;
+  }
+  

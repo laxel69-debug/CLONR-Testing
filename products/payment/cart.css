@@ -1,0 +1,225 @@
+/* Container Styles */
+.cart {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Heading */
+  .cart h1 {
+    text-align: center;
+    color: #000000;
+    margin-bottom: 30px;
+  }
+  
+  /* Error Message */
+  .error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+  }
+  
+  /* Table Styles */
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+  }
+  
+  .cart-table th, .cart-table td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .cart-table th {
+    background-color: #000000;
+    color: white;
+  }
+  
+  .cart-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .cart-table img {
+    border-radius: 8px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  
+  /* Total Row */
+  .cart-table tfoot td {
+    font-weight: bold;
+    background-color: #f1f1f1;
+  }
+  
+  /* Form Button (Remove Item) */
+  button[name="remove_item"] {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button[name="remove_item"]:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Cart Actions (Checkout & Continue Shopping) */
+  .cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .cart-actions a {
+    text-decoration: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .checkout-button {
+    background-color: #000000;
+  }
+  
+  .checkout-button:hover {
+    background-color: #555;
+  }
+  
+  .continue-shopping {
+    background-color: #b30000;
+  }
+  
+  .continue-shopping:hover {
+    background-color: #900000;
+  }
+  
+  /* Display Orders Section */
+.display-orders {
+  width: 100%;
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.display-orders p {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.display-orders p span {
+  color: #b30000;
+}
+
+.display-orders .grand-total {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.display-orders .grand-total span {
+  color: #b30000;
+}
+
+/* Checkout Form Section */
+.checkout-orders form {
+  width: 100%;
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.checkout-orders form h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.checkout-orders form .flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkout-orders form .flex .inputBox {
+  width: 97%;
+}
+
+.checkout-orders form .flex .inputBox .box {
+  width: calc(100% - 10px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.checkout-orders form .flex .inputBox select[name="method"] {
+  width: 103%; /* Adjust as needed */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+
+.checkout-orders form .flex .inputBox span {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Buttons */
+input[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+input[type="submit"]:hover {
+  background-color: #b30000;
+}
+
+input[type="submit"].disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  text-align: center;
+}
+

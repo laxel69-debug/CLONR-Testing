@@ -1,0 +1,230 @@
+body {
+    margin: 0;
+    font-family: 'Roboto',sans-serif;
+    background-color: #f1f1f1;
+    color: #333333;
+  }
+  
+  header {
+    padding: 10px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .title {
+    color: #000000;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .profile-container {
+    position: absolute;
+    top: 10px;
+    right: 1px;
+  }
+
+  /* Header Styles */
+.header {
+  background-color: #f1f1f1;
+  padding: 10px 50px;
+  position: relative;
+  z-index: 1000;
+}
+
+/* Flex Container */
+.header .flex {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 80px;
+}
+
+/* Profile Wrapper (Hover to Expand) */
+.profile-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Profile Icon/Logo */
+.profile-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: url('uploaded_img/logo.png') no-repeat center center/cover; /* Replace with your logo path */
+  border: 3px solid #f1f1f1;
+}
+
+/* Profile Dropdown */
+.profile {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+/* Show Dropdown on Hover */
+.profile-wrapper:hover .profile {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Profile Image */
+.profile img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+/* User Name */
+.profile p {
+  margin: 5px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Buttons */
+.profile a.btn, .profile a.delete-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+/* Update Profile Button */
+.profile a.btn {
+  background-color: #d4af37;
+  color: #fff;
+}
+
+.profile a.btn:hover {
+  background-color: #b5962f;
+  transform: translateY(-3px);
+}
+
+/* Logout Button */
+.profile a.delete-btn {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.profile a.delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-3px);
+}
+
+/* Flex Button Container */
+.flex-btn {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Login & Register Buttons */
+.flex-btn a.option-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.flex-btn a.option-btn:hover {
+  background-color: #555;
+  transform: translateY(-3px);
+}
+
+  a {
+    text-decoration: none;
+  }
+
+  .navbar {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    z-index: 10; 
+  }
+  
+  .navbar li {
+    position: relative;
+    cursor: pointer;
+    font-size: 18px;
+    color: #393737;
+  }
+  
+  .navbar a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .dropdown-menu {
+    opacity: 0;
+    transform: translateY(-10px);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    border: 0px solid #ffffff;
+    list-style: none;
+    padding: 10px 0;
+    min-width: 200px;
+    z-index: 20;
+    visibility: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+  }
+  
+  .dropdown-menu li a {
+    display: block;
+    padding: 10px 25px;
+    font-size: 18px;
+  }
+  
+  .dropdown:hover .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  } 
+
+  footer {
+    color: #000000;
+    text-align: center;
+    padding: 20px 20px;
+  }
+  
+  .footer-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-content p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #393737;
+  }
+  
+  .custom-hr {
+    width: 50%; 
+    border: 1px solid #800020;
+    margin-top: 5%;
+  }

@@ -1,0 +1,28 @@
+mygad.
+
+herman
+    - cart number when adding to cart
+    - cart must be based on what you've added not shorts only
+    - payment
+    - deleted product column in details
+    - PROBLEM: user id, only the user_id 1 can add to cart what the heElLLlL
+
+TO DO:
+    - email validation
+
+    - payment
+    - orders (to know where is your order)
+    - registration
+
+    Make another account, manually change the default user_type to 'admin'.
+        - admin update products (need to update whole list/menu)
+        - admin orders
+        - admin messages (admin_contacts)
+    
+    - animation
+    - pk anf fk in database
+
+
+
+
+ 

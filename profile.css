@@ -1,0 +1,167 @@
+/* Container Styles */
+.update-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header Section */
+  .update-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .update-header h2 {
+    color: #000000;
+    font-size: 28px;
+  }
+  
+  /* Profile Image Section */
+  .update-image {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .update-image img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #8b8b8b; /* Gold border */
+  }
+  
+  .upload-btn {
+    background-color: #d4af37;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .upload-btn:hover {
+    background-color: #b5962f;
+  }
+  
+  /* Form Styles */
+  .update-info h3 {
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .form-group input {
+    width: calc(100% - 20px);
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    border-color: #d4af37;
+    outline: none;
+  }
+  
+  /* Readonly Input */
+  .form-group input[readonly] {
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+  }
+  
+  /* Button Container */
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  /* Save Button */
+  .save-btn {
+    background-color: #000000;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .save-btn:hover {
+    background-color: #555;
+  }
+  
+  /* Logout Button */
+  .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  /* Error and Success Messages */
+  .message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .message.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .update-container {
+      width: 95%;
+    }
+  
+    .form-group input {
+      width: 100%;
+    }
+  
+    .button-container {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .save-btn, .delete-btn {
+      width: 100%;
+    }
+  }
+  
