@@ -149,5 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
             <p>© 2025 CLONR. All Rights Reserved.</p>
         </div>
     </footer>
+    <script src="/CLONR/CLONR-main/js/cart.js"></script>
 </body>
 </html>
