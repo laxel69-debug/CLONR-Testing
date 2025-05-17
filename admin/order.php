@@ -96,7 +96,6 @@ try {
                     <li><a href="products.php">Products</a></li>
                     <li><a href="order.php">Orders</a></li>
                     <li><a href="users.php">Users</a></li>
-                    
                     <li><a href="messages.php">Messages</a></li>
                     <li><a href="../AdminUpdateProfile.php">Profile</a></li>
                     <li><a href="../logout.php" class="logout-btn">Logout</a></li>

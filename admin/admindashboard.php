@@ -369,7 +369,7 @@ try {
                     <div class="stat-card pending">
                         <h3>Pending Orders</h3>
                         <p class="stat-number"><?= $pending_count ?></p>
-                        <a href="pending_orders.php?status=pending" class="stat-link">
+                        <a href="order.php?status=pending&search=&sort=id&order=ASC" class="stat-link">
                             <i class="fas fa-eye"></i> View Details
                         </a>
                     </div>
@@ -377,7 +377,7 @@ try {
                     <div class="stat-card approved">
                         <h3>Completed Orders</h3>
                         <p class="stat-number"><?= $completed_count ?></p>
-                        <a href="completed_orders.php?status=completed" class="stat-link">
+                        <a href="order.php?status=completed&search=&sort=id&order=ASC" class="stat-link">
                             <i class="fas fa-eye"></i> View Details
                         </a>
                     </div>
@@ -385,7 +385,7 @@ try {
                     <div class="stat-card declined">
                         <h3>Cancelled Orders</h3>
                         <p class="stat-number"><?= $cancelled_count ?></p>
-                        <a href="cancelled_orders.php?status=cancelled" class="stat-link">
+                        <a href="order.php?status=cancelled&search=&sort=id&order=ASC" class="stat-link">
                             <i class="fas fa-eye"></i> View Details
                         </a>
                     </div>
@@ -393,9 +393,7 @@ try {
                     <div class="stat-card sales">
                         <h3>Total Sales</h3>
                         <p class="stat-number">₱<?= number_format($total_sales, 2) ?></p>
-                        <a href="sales_report.php" class="stat-link">
-                            <i class="fas fa-chart-line"></i> View Report
-                        </a>
+                        
                     </div>
                     
                     <div class="stat-card users">

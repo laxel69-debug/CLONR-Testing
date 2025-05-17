@@ -108,7 +108,7 @@
       <section class="products-section">
         <div class="section-header">
           <h2>JACKETS</h2>
-          <a href="products/jackets.html" class="view-all">View All</a>
+          <a href="products/jackets.php" class="view-all">View All</a>
         </div>
 
         <div class="products-grid">
@@ -145,7 +145,7 @@
       <section class="products-section">
         <div class="section-header">
           <h2>PANTS</h2>
-          <a href="products/pants.html" class="view-all">View All</a>
+          <a href="products/pants.php" class="view-all">View All</a>
         </div>
 
         <div class="products-grid">
@@ -182,7 +182,7 @@
       <section class="products-section">
         <div class="section-header">
           <h2>SHORTS</h2>
-          <a href="products/shorts.html" class="view-all">View All</a>
+          <a href="products/shorts.php" class="view-all">View All</a>
         </div>
 
         <div class="products-grid">
@@ -219,7 +219,7 @@
       <section class="products-section">
         <div class="section-header">
           <h2>ACCESSORIES</h2>
-          <a href="products/accessories.html" class="view-all">View All</a>
+          <a href="products/accessories.php" class="view-all">View All</a>
         </div>
 
         <div class="products-grid">
