@@ -1,16 +1,16 @@
 <?php
 include 'config.php';
 
-$name = $phone = $email = $user_type = 'user';
+// Initialize variables with empty values or previously submitted values
+$name = isset($_POST['name']) ? trim(filter_var($_POST['name'], FILTER_SANITIZE_STRING)) : '';
+$phone = isset($_POST['phone']) ? trim(filter_var($_POST['phone'], FILTER_SANITIZE_STRING)) : '';
+$email = isset($_POST['email']) ? trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL)) : '';
+$user_type = isset($_POST['user_type']) ? $_POST['user_type'] : 'user';
 $message = [];
 
 if (isset($_POST['submit'])) {
-    $name = isset($_POST['name']) ? trim(filter_var($_POST['name'], FILTER_SANITIZE_STRING)) : '';
-    $phone = isset($_POST['phone']) ? trim(filter_var($_POST['phone'], FILTER_SANITIZE_STRING)) : '';
-    $email = isset($_POST['email']) ? trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL)) : '';
     $pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
     $cpass = isset($_POST['cpass']) ? trim($_POST['cpass']) : '';
-    $user_type = isset($_POST['user_type']) ? $_POST['user_type'] : 'user';
     
     $image = isset($_FILES['image']['name']) ? $_FILES['image']['name'] : '';
     $image_size = isset($_FILES['image']['size']) ? $_FILES['image']['size'] : 0;
@@ -20,11 +20,36 @@ if (isset($_POST['submit'])) {
     // Validate name
     if (empty($name) || strlen($name) < 3) {
         $message[] = 'Name must be at least 3 characters long!';
+        $name = ''; // Reset only if validation fails
     }
 
     // Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message[] = 'Invalid email format!';
+        $email = ''; // Reset only if validation fails
+    } else {
+        // Check if user exists only if email is valid
+        $select = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
+        $select->execute([$email]);
+
+        if ($select->rowCount() > 0) {
+            $message[] = 'User email already exists!';
+            $email = ''; // Reset only if validation fails
+        }
+    }
+
+    // Validate phone number: must be a string of exactly 9 digits
+    if (!preg_match('/^\d{10}$/', $phone)) {
+        $message[] = 'Phone number must be exactly 9 digits!';
+        $phone = ''; // Reset only if validation fails
+    } else {
+        // Check if phone number already exists only if format is valid
+        $check_phone = $conn->prepare("SELECT * FROM `users` WHERE phone = ?");
+        $check_phone->execute([$phone]);
+        if ($check_phone->rowCount() > 0) {
+            $message[] = 'Phone number already exists!';
+            $phone = ''; // Reset only if validation fails
+        }
     }
 
     // Validate password
@@ -35,14 +60,6 @@ if (isset($_POST['submit'])) {
     // Check password match
     if ($pass !== $cpass) {
         $message[] = 'Passwords do not match!';
-    }
-
-    // Check if user exists
-    $select = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
-    $select->execute([$email]);
-
-    if ($select->rowCount() > 0) {
-        $message[] = 'User email already exists!';
     }
 
     // Admin verification process
@@ -56,6 +73,7 @@ if (isset($_POST['submit'])) {
 
         if (!isset($_POST['admin_email']) || !isset($_POST['admin_pass']) || empty($_POST['admin_email']) || empty($_POST['admin_pass'])) {
             $message[] = 'Admin credentials are required to create an admin account!';
+            $user_type = 'user'; // Reset to user if admin validation fails
         } else {
             $admin_email = $_POST['admin_email'];
             $admin_pass = md5($_POST['admin_pass']);
@@ -65,6 +83,7 @@ if (isset($_POST['submit'])) {
             
             if ($verify_admin->rowCount() == 0) {
                 $message[] = 'Admin verification failed!';
+                $user_type = 'user'; // Reset to user if admin validation fails
             }
         }
     }
@@ -76,10 +95,12 @@ if (isset($_POST['submit'])) {
 
         if (!in_array($image_type, $allowed_types)) {
             $message[] = 'Invalid image format! Only JPG, JPEG, and PNG allowed.';
+            $image = ''; // Reset only if validation fails
         }
 
         if ($image_size > 2000000) {
             $message[] = 'Image size is too large! Must be under 2MB.';
+            $image = ''; // Reset only if validation fails
         }
     } else {
         $message[] = 'Please upload an image!';
@@ -90,8 +111,8 @@ if (isset($_POST['submit'])) {
         $hashed_password = md5($pass);
 
         // Insert user into database
-        $insert = $conn->prepare("INSERT INTO `users`(name, email, password, image, user_type) VALUES(?,?,?,?,?)");
-        $insert->execute([$name, $email, $hashed_password, $image, $user_type]);
+        $insert = $conn->prepare("INSERT INTO `users`(name, phone,email, password, image, user_type) VALUES(?,?,?,?,?,?)");
+        $insert->execute([$name,$phone , $email, $hashed_password, $image, $user_type]);
 
         if ($insert) {
             move_uploaded_file($image_tmp_name, $image_folder);
@@ -147,13 +168,15 @@ if (isset($_POST['submit'])) {
         <section class="form-container">
             <form action="" enctype="multipart/form-data" method="POST">
                 <h3>Register Now</h3>
-                <input type="text" name="name" class="box" placeholder="Enter your name" required>
-                <input type="email" name="email" class="box" placeholder="Enter your email" required>
+                <input type="text" name="name" class="box" placeholder="Enter your name" value="<?php echo htmlspecialchars($name); ?>" required>
+                
+                <input type="text" name="phone" class="box" placeholder="Enter your phone" value="<?php echo htmlspecialchars($phone); ?>" required>
+                <input type="email" name="email" class="box" placeholder="Enter your email" value="<?php echo htmlspecialchars($email); ?>" required>
                 <input type="password" name="pass" class="box" placeholder="Enter your password (min. 8 characters)" required>
                 <input type="password" name="cpass" class="box" placeholder="Confirm your password" required>
                 <select name="user_type" class="box" required>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
+                    <option value="user" <?php echo ($user_type === 'user') ? 'selected' : ''; ?>>User</option>
+                    <option value="admin" <?php echo ($user_type === 'admin') ? 'selected' : ''; ?>>Admin</option>
                 </select>
                 <input type="file" name="image" class="box" required accept="image/jpg, image/jpeg, image/png">
                 <input type="submit" value="Register Now" class="btn" name="submit">

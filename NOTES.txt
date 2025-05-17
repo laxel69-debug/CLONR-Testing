@@ -25,4 +25,42 @@ TO DO:
 
 
 
+User:
+-CART REMOVE THE NUMBER or modify(removed)
+-send message no function(added)
+
+
+-remove dropdown in payment method (removed)
+-order summary margin (fixed)
+-payment color consistency (new)
+
+
+Receipt
+FIX THE DATE(fixed)
+remove discount(removed)
+receipt > home(added)
+
+
+Optional
++ 40 shipping or no shipping fee (free)
+
+
+
+Admin: 
+add product(wa)
+fix recent orders (not yet)
+message session (new)
+
+(done)
+remove export
+hover in user remove
+remove edit 
+remove add new users
+
+
+
+
+
+
+
  

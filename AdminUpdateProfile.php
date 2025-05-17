@@ -96,15 +96,11 @@ if (isset($_POST['update_profile'])) {
     <title>Update Admin Profile</title>
     <link rel="stylesheet" href="global.css"/>
     <link rel="stylesheet" href="profile.css"/>
+     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+   
 </head>
 <body>
-<?php if (!empty($message)): ?>
-    <div class="messages">
-        <?php foreach ($message as $msg): ?>
-            <p><?= htmlspecialchars($msg); ?></p>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+
     <header>
         <div class="update">
         <a href="admin/admindashboard.php"><h1 class="title">CLONR</h1></a>
@@ -122,6 +118,13 @@ if (isset($_POST['update_profile'])) {
             
         </div>
     </header>
+    <?php if (!empty($message)): ?>
+    <div class="messages">
+        <?php foreach ($message as $msg): ?>
+            <p><?= htmlspecialchars($msg); ?></p>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
 
     <div class="update-container">
         <div class="update-header">
@@ -187,6 +190,7 @@ if (isset($_POST['update_profile'])) {
             </div>
         </div>
     </div>
+    
 
     <hr class="custom-hr">
 

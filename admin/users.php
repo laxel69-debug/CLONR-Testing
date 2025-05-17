@@ -14,6 +14,119 @@ if (!isset($_SESSION['admin_id'])) {
     exit;
 }
 
+// Handle actions (ban, unban, delete, etc.)
+if (isset($_GET['action']) && isset($_GET['id'])) {
+    $user_id = $_GET['id'];
+    $action = $_GET['action'];
+    
+    try {
+        switch ($action) {
+            case 'ban':
+                $stmt = $conn->prepare("UPDATE users SET status = 'banned' WHERE id = ?");
+                $stmt->execute([$user_id]);
+                $_SESSION['message'] = "User has been banned successfully";
+                break;
+                
+            case 'unban':
+                $stmt = $conn->prepare("UPDATE users SET status = 'active' WHERE id = ?");
+                $stmt->execute([$user_id]);
+                $_SESSION['message'] = "User has been unbanned successfully";
+                break;
+                
+            case 'delete':
+                // First, check if user has orders or messages
+                $check_orders = $conn->prepare("SELECT COUNT(*) FROM orders WHERE user_id = ?");
+                $check_orders->execute([$user_id]);
+                $order_count = $check_orders->fetchColumn();
+                
+                $check_messages = $conn->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ?");
+                $check_messages->execute([$user_id]);
+                $message_count = $check_messages->fetchColumn();
+                
+                if ($order_count > 0 || $message_count > 0) {
+                    $_SESSION['error'] = "Cannot delete user with associated orders or messages";
+                } else {
+                    $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
+                    $stmt->execute([$user_id]);
+                    $_SESSION['message'] = "User has been deleted successfully";
+                }
+                break;
+                
+            case 'toggle_admin':
+                // Get current admin status
+                $check = $conn->prepare("SELECT user_type FROM users WHERE id = ?");
+                $check->execute([$user_id]);
+                $current_type = $check->fetchColumn();
+                
+                $new_type = ($current_type === 'admin') ? 'user' : 'admin';
+                $stmt = $conn->prepare("UPDATE users SET user_type = ? WHERE id = ?");
+                $stmt->execute([$new_type, $user_id]);
+                $_SESSION['message'] = "User admin status updated successfully";
+                break;
+        }
+        
+        header("Location: users.php");
+        exit();
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Error performing action: " . $e->getMessage();
+        header("Location: users.php");
+        exit();
+    }
+}
+
+// Handle bulk actions
+if (isset($_POST['bulk_action']) && isset($_POST['selected_users'])) {
+    $selected_users = $_POST['selected_users'];
+    $bulk_action = $_POST['bulk_action'];
+    
+    try {
+        $placeholders = implode(',', array_fill(0, count($selected_users), '?'));
+        
+        switch ($bulk_action) {
+            case 'ban':
+                $stmt = $conn->prepare("UPDATE users SET status = 'banned' WHERE id IN ($placeholders)");
+                $stmt->execute($selected_users);
+                $_SESSION['message'] = "Selected users have been banned successfully";
+                break;
+                
+            case 'unban':
+                $stmt = $conn->prepare("UPDATE users SET status = 'active' WHERE id IN ($placeholders)");
+                $stmt->execute($selected_users);
+                $_SESSION['message'] = "Selected users have been unbanned successfully";
+                break;
+                
+            case 'delete':
+                // Check if any selected user has orders or messages
+                $check = $conn->prepare("SELECT COUNT(*) FROM orders WHERE user_id IN ($placeholders) 
+                                        UNION SELECT COUNT(*) FROM messages WHERE user_id IN ($placeholders)");
+                $check->execute($selected_users);
+                $has_records = false;
+                while ($count = $check->fetchColumn()) {
+                    if ($count > 0) {
+                        $has_records = true;
+                        break;
+                    }
+                }
+                
+                if ($has_records) {
+                    $_SESSION['error'] = "Cannot delete users with associated orders or messages";
+                } else {
+                    $stmt = $conn->prepare("DELETE FROM users WHERE id IN ($placeholders)");
+                    $stmt->execute($selected_users);
+                    $_SESSION['message'] = "Selected users have been deleted successfully";
+                }
+                break;
+        }
+        
+        header("Location: users.php");
+        exit();
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Error performing bulk action: " . $e->getMessage();
+        header("Location: users.php");
+        exit();
+    }
+}
+
 // Search and filter functionality
 $search = $_GET['search'] ?? '';
 $status_filter = $_GET['status'] ?? 'all';
@@ -32,7 +145,8 @@ $conditions = [];
 $params = [];
 
 if (!empty($search)) {
-    $conditions[] = "(u.name LIKE ? OR u.email LIKE ?)";
+    $conditions[] = "(u.name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
+    $params[] = "%$search%";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
@@ -54,7 +168,14 @@ $countStmt->execute($params);
 $totalUsers = $countStmt->fetchColumn();
 $totalPages = ceil($totalUsers / $limit);
 
+// Add sorting
+$sort = $_GET['sort'] ?? 'id';
+$order = $_GET['order'] ?? 'asc';
+$allowed_sort = ['id', 'name', 'email', 'phone', 'created_at', 'order_count'];
+$sort = in_array($sort, $allowed_sort) ? $sort : 'id';
+$order = $order === 'desc' ? 'desc' : 'asc';
 
+$query .= " ORDER BY $sort $order LIMIT $limit OFFSET $offset";
 
 // Get users
 $stmt = $conn->prepare($query);
@@ -130,6 +251,26 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             gap: 10px;
         }
         
+        .bulk-actions {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .bulk-actions select, .bulk-actions button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .bulk-actions button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
         .pagination {
             display: flex;
             justify-content: center;
@@ -180,6 +321,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .delete { background-color: #dc3545; color: white; }
         .export { background-color: #6c757d; color: white; }
         .add-new { background-color: #007bff; color: white; }
+        .admin-toggle { background-color: #6610f2; color: white; }
         
         .status-badge {
             padding: 3px 8px;
@@ -207,6 +349,30 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #495057;
             font-size: 12px;
             margin-left: 5px;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        th.sortable {
+            cursor: pointer;
+        }
+        
+        th.sortable:hover {
+            background-color: #f0f0f0;
         }
         
         @media (max-width: 768px) {
@@ -245,9 +411,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             .users-table td:nth-of-type(1):before { content: "ID"; }
             .users-table td:nth-of-type(2):before { content: "Profile"; }
-            .users-table td:nth-of-type(3):before { content: "Name"; }
+            .users-table td:nth-of-type(3):before { content: "name"; }
             .users-table td:nth-of-type(4):before { content: "Email"; }
-            .users-table td:nth-of-type(5):before { content: "Joined"; }
+            .users-table td:nth-of-type(5):before { content: "Phone"; }
             .users-table td:nth-of-type(6):before { content: "Orders"; }
             .users-table td:nth-of-type(7):before { content: "Messages"; }
             .users-table td:nth-of-type(8):before { content: "Status"; }
@@ -280,6 +446,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="admin-container">
             <h1 class="admin-title">User Management</h1>
             
+            <?php if (isset($_SESSION['message'])): ?>
+                <div class="message"><?= $_SESSION['message'] ?></div>
+                <?php unset($_SESSION['message']); ?>
+            <?php endif; ?>
+            
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="error"><?= $_SESSION['error'] ?></div>
+                <?php unset($_SESSION['error']); ?>
+            <?php endif; ?>
+            
             <div class="user-management-tools">
                 <div class="search-filter-container">
                     <div class="search-box">
@@ -304,15 +480,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
                 
-                <div class="action-buttons">
-                    <a href="export_users.php?search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>" 
-                       class="action-btn export">
-                        <i class="fas fa-file-export"></i> Export
-                    </a>
-                    <a href="add_user.php" class="action-btn add-new">
-                        <i class="fas fa-plus"></i> Add New
-                    </a>
-                </div>
             </div>
             
             <div class="users-table">
@@ -323,23 +490,36 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <a href="users.php" class="action-btn">Reset Filters</a>
                     </div>
                 <?php else: ?>
+                    <form method="post" id="bulkForm">
+                        <div class="bulk-actions">
+                            <select name="bulk_action" class="bulk-select">
+                                <option value="">Bulk Actions</option>
+                                <option value="ban">Ban Selected</option>
+                                <option value="unban">Unban Selected</option>
+                                <option value="delete">Delete Selected</option>
+                            </select>
+                            <button type="submit" class="bulk-apply">Apply</button>
+                        </div>
+                    
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th><input type="checkbox" id="selectAll"></th>
+                                <th class="sortable" onclick="sortTable('id')">ID <?= $sort === 'id' ? ($order === 'asc' ? '↑' : '↓') : '' ?></th>
                                 <th>Profile</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Joined</th>
-                                <th>Orders</th>
+                                <th class="sortable" onclick="sortTable('name')">Name <?= $sort === 'name' ? ($order === 'asc' ? '↑' : '↓') : '' ?></th>
+                                <th class="sortable" onclick="sortTable('email')">Email <?= $sort === 'email' ? ($order === 'asc' ? '↑' : '↓') : '' ?></th>
+                                <th class="sortable" onclick="sortTable('phone')">Phone <?= $sort === 'phone' ? ($order === 'asc' ? '↑' : '↓') : '' ?></th>
+                                <th class="sortable" onclick="sortTable('order_count')">Orders <?= $sort === 'order_count' ? ($order === 'asc' ? '↑' : '↓') : '' ?></th>
                                 <th>Messages</th>
-                                <th>Status</th>
+                                <th class="sortable" onclick="sortTable('status')">Status <?= $sort === 'status' ? ($order === 'asc' ? '↑' : '↓') : '' ?></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($users as $user): ?>
                             <tr>
+                                <td><input type="checkbox" name="selected_users[]" value="<?= $user['id'] ?>"></td>
                                 <td><?= htmlspecialchars($user['id']) ?></td>
                                 <td>
                                     <img src="../uploaded_img/<?= htmlspecialchars($user['image'] ?? 'default.png') ?>" 
@@ -347,12 +527,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </td>
                                 <td>
                                     <?= htmlspecialchars($user['name']) ?>
-                                    <?php if ($user['is_admin']): ?>
+                                    <?php if ($user['user_type'] === 'admin'): ?>
                                         <span class="stats-badge" title="Administrator">ADMIN</span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?= htmlspecialchars($user['email']) ?></td>
-                                <td><?= htmlspecialchars(date('M d, Y', strtotime($user['created_at']))) ?></td>
+                                <td><?= htmlspecialchars($user['phone']) ?></td>
                                 <td>
                                     <span class="stats-badge"><?= $user['order_count'] ?></span>
                                 </td>
@@ -366,31 +546,30 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="status-badge <?= htmlspecialchars($user['status']) ?>">
-                                        <?= ucfirst(htmlspecialchars($user['status'])) ?>
+                                    <span class="status-badge <?= htmlspecialchars($user['Status']) ?>">
+                                        <?= ucfirst(htmlspecialchars($user['Status'])) ?>
                                     </span>
                                 </td>
                                 <td>
                                     <div class="user-actions">
-                                        <a href="view_user.php?id=<?= $user['id'] ?>" class="action-btn view" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="edit_user.php?id=<?= $user['id'] ?>" class="action-btn edit" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                       
+                                        
                                         <a href="message_user.php?id=<?= $user['id'] ?>" class="action-btn message" title="Message">
                                             <i class="fas fa-envelope"></i>
                                         </a>
-                                        <?php if ($user['status'] === 'banned'): ?>
-                                            <a href="unban_user.php?id=<?= $user['id'] ?>" class="action-btn edit" title="Unban">
+                                        <a href="users.php?action=toggle_admin&id=<?= $user['id'] ?>" class="action-btn admin-toggle" title="Toggle Admin">
+                                            <i class="fas fa-user-shield"></i>
+                                        </a>
+                                        <?php if ($user['Status'] === 'banned'): ?>
+                                            <a href="users.php?action=unban&id=<?= $user['id'] ?>" class="action-btn edit" title="Unban">
                                                 <i class="fas fa-unlock"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a href="ban_user.php?id=<?= $user['id'] ?>" class="action-btn delete" title="Ban">
+                                            <a href="users.php?action=ban&id=<?= $user['id'] ?>" class="action-btn delete" title="Ban">
                                                 <i class="fas fa-ban"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a href="delete_user.php?id=<?= $user['id'] ?>" class="action-btn delete" 
+                                        <a href="users.php?action=delete&id=<?= $user['id'] ?>" class="action-btn delete" 
                                            title="Delete" onclick="return confirmDelete()">
                                             <i class="fas fa-trash"></i>
                                         </a>
@@ -400,11 +579,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    </form>
                     
                     <?php if ($totalPages > 1): ?>
                     <div class="pagination">
                         <?php if ($page > 1): ?>
-                            <a href="?page=<?= $page-1 ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>">
+                            <a href="?page=<?= $page-1 ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>&sort=<?= $sort ?>&order=<?= $order ?>">
                                 <i class="fas fa-chevron-left"></i> Previous
                             </a>
                         <?php endif; ?>
@@ -415,7 +595,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         $end = min($totalPages, $page + 2);
                         
                         if ($start > 1) {
-                            echo '<a href="?page=1&search=' . urlencode($search) . '&status=' . urlencode($status_filter) . '">1</a>';
+                            echo '<a href="?page=1&search=' . urlencode($search) . '&status=' . urlencode($status_filter) . '&sort=' . $sort . '&order=' . $order . '">1</a>';
                             if ($start > 2) echo '<span>...</span>';
                         }
                         
@@ -423,18 +603,17 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php if ($i == $page): ?>
                                 <span class="current"><?= $i ?></span>
                             <?php else: ?>
-                                <a href="?page=<?= $i ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>"><?= $i ?></a>
+                                <a href="?page=<?= $i ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>&sort=<?= $sort ?>&order=<?= $order ?>"><?= $i ?></a>
                             <?php endif; ?>
                         <?php endfor; ?>
                         
-                        if ($end < $totalPages) {
-                            if ($end < $totalPages - 1) echo '<span>...</span>';
-                            echo '<a href="?page=' . $totalPages . '&search=' . urlencode($search) . '&status=' . urlencode($status_filter) . '">' . $totalPages . '</a>';
-                        }
-                        ?>
+                        <?php if ($end < $totalPages): ?>
+                            <?php if ($end < $totalPages - 1) echo '<span>...</span>'; ?>
+                            <a href="?page=<?= $totalPages ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>&sort=<?= $sort ?>&order=<?= $order ?>"><?= $totalPages ?></a>
+                        <?php endif; ?>
                         
                         <?php if ($page < $totalPages): ?>
-                            <a href="?page=<?= $page+1 ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>">
+                            <a href="?page=<?= $page+1 ?>&search=<?= urlencode($search) ?>&status=<?= urlencode($status_filter) ?>&sort=<?= $sort ?>&order=<?= $order ?>">
                                 Next <i class="fas fa-chevron-right"></i>
                             </a>
                         <?php endif; ?>
@@ -475,9 +654,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         
         // Add click handlers for ban/unban links
-        document.querySelectorAll('a[href*="ban_user.php"], a[href*="unban_user.php"]').forEach(link => {
+        document.querySelectorAll('a[href*="action=ban"], a[href*="action=unban"]').forEach(link => {
             link.addEventListener('click', function(e) {
-                const action = this.href.includes('ban_user.php') ? 'ban' : 'unban';
+                const action = this.href.includes('action=ban') ? 'ban' : 'unban';
                 const msg = action === 'ban' 
                     ? 'Are you sure you want to ban this user? They will no longer be able to access their account.'
                     : 'Are you sure you want to unban this user? They will regain access to their account.';
@@ -486,6 +665,63 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     e.preventDefault();
                 }
             });
+        });
+        
+        // Bulk actions select all
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[name="selected_users[]"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+        
+        // Sort table
+        function sortTable(column) {
+            const url = new URL(window.location.href);
+            const currentSort = url.searchParams.get('sort');
+            const currentOrder = url.searchParams.get('order');
+            
+            let newOrder = 'asc';
+            if (currentSort === column) {
+                newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+            }
+            
+            url.searchParams.set('sort', column);
+            url.searchParams.set('order', newOrder);
+            window.location.href = url.toString();
+        }
+        
+        // Bulk form submission
+        document.getElementById('bulkForm').addEventListener('submit', function(e) {
+            const selected = document.querySelectorAll('input[name="selected_users[]"]:checked');
+            const action = document.querySelector('select[name="bulk_action"]').value;
+            
+            if (selected.length === 0) {
+                alert('Please select at least one user');
+                e.preventDefault();
+                return;
+            }
+            
+            if (!action) {
+                alert('Please select a bulk action');
+                e.preventDefault();
+                return;
+            }
+            
+            if (action === 'delete' && !confirm('Are you sure you want to delete the selected users? This cannot be undone.')) {
+                e.preventDefault();
+                return;
+            }
+            
+            if (action === 'ban' && !confirm('Are you sure you want to ban the selected users?')) {
+                e.preventDefault();
+                return;
+            }
+            
+            if (action === 'unban' && !confirm('Are you sure you want to unban the selected users?')) {
+                e.preventDefault();
+                return;
+            }
         });
     </script>
 </body>

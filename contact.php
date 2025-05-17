@@ -1,5 +1,4 @@
 <?php
-
 @include 'config.php';
 
 session_start();
@@ -10,29 +9,63 @@ if(!isset($user_id)){
    header('location:login.php');
 };
 
-if(isset($_POST['send'])){
+// Fetch user details
+$user_info = [];
+$select_user = $conn->prepare("SELECT name, email FROM `users` WHERE id = ?");
+$select_user->execute([$user_id]);
+$user_info = $select_user->fetch(PDO::FETCH_ASSOC);
 
-   $name = $_POST['name'];
-   $name = filter_var($name, FILTER_SANITIZE_STRING);
-   $email = $_POST['email'];
-   $email = filter_var($email, FILTER_SANITIZE_STRING);
-   $msg = $_POST['msg'];
-   $msg = filter_var($msg, FILTER_SANITIZE_STRING);
+if (isset($_POST['send'])) {
+    $subject = filter_var($_POST['subject'], FILTER_SANITIZE_STRING);
+    $msg = filter_var($_POST['msg'], FILTER_SANITIZE_STRING);
 
-   $select_message = $conn->prepare("SELECT * FROM `message` WHERE name = ? AND email = ? AND message = ?");
-   $select_message->execute([$name, $email, $msg]);
+    // Fetch all admins
+    $adminQuery = $conn->query("SELECT id FROM users WHERE user_type = 'admin'");
+    $admins = $adminQuery->fetchAll(PDO::FETCH_ASSOC);
 
-   if($select_message->rowCount() > 0){
-      $message[] = 'You have already sent this message!';
-   }else{
+    $duplicateFound = false;
 
-      $insert_message = $conn->prepare("INSERT INTO `message`(user_id, name, email, message) VALUES(?,?,?,?)");
-      $insert_message->execute([$user_id, $name, $email, $msg]);
+    foreach ($admins as $admin) {
+        $admin_id = $admin['id'];
 
-      $message[] = 'Message sent successfully!';
-   }
+        // Check for duplicate message for each admin
+        $checkDuplicate = $conn->prepare("SELECT * FROM messages WHERE user_id = ? AND sender_id = ? AND message = ?");
+        $checkDuplicate->execute([$admin_id, $user_id, $msg]);
+
+        if ($checkDuplicate->rowCount() > 0) {
+            $duplicateFound = true;
+            continue;
+        }
+
+        // Send message to this admin
+        $insert = $conn->prepare("INSERT INTO messages (user_id, sender_id, sender_type, subject, message, is_read, created_at)
+                                  VALUES (?, ?, 'user', ?, ?, 0, NOW())");
+        $insert->execute([$admin_id, $user_id, $subject, $msg]);
+    }
+
+    if ($duplicateFound) {
+        $message[] = 'Some messages were not sent because you already sent the same message!';
+    } else {
+        $message[] = 'Message sent successfully to all admins!';
+    }
 }
 
+// Fetch message history with admin names
+$message_history = [];
+$select_history = $conn->prepare("
+    SELECT m.*, 
+           sender.name as sender_name,
+           receiver.name as receiver_name 
+    FROM `messages` m
+    LEFT JOIN users sender ON m.sender_id = sender.id
+    LEFT JOIN users receiver ON m.user_id = receiver.id
+    WHERE (m.sender_id = ? AND m.sender_type = 'user')
+       OR (m.user_id = ? AND m.sender_type = 'admin')
+    ORDER BY m.created_at DESC
+    LIMIT 5
+");
+$select_history->execute([$user_id, $user_id]);
+$message_history = $select_history->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -41,10 +74,63 @@ if(isset($_POST['send'])){
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>CLONR</title>
+        <title>CLONR - Contact Us</title>
         <link rel="stylesheet" href="global.css"/>
         <link rel="stylesheet" href="contact.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <style>
+            .message-history {
+                margin: 2rem auto;
+                max-width: 800px;
+            }
+            .history-item {
+                background: #f9f9f9;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 5px;
+                position: relative;
+            }
+            .outgoing {
+                border-left: 4px solid #4CAF50;
+            }
+            .incoming {
+                border-left: 4px solid #2196F3;
+            }
+            .history-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+            }
+            .history-participants {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+            .history-subject {
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 0.5rem;
+            }
+            .history-date {
+                color: #666;
+                font-size: 0.9rem;
+            }
+            .history-message {
+                color: #555;
+                padding: 0.5rem;
+                background: white;
+                border-radius: 4px;
+            }
+            .contact-form {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .message-direction {
+                font-size: 0.9rem;
+                color: #666;
+                margin-bottom: 0.5rem;
+            }
+        </style>
     </head>
     
     <body>
@@ -65,7 +151,7 @@ if(isset($_POST['send'])){
                 </li>
                 <li><a href="sizechart.php">SIZE CHART</a></li>
                 <li><a href="contact.php">CONTACT US</a></li>
-                <li><a href="products/payment/cart.php">CART (<span class="cart-count">0</span>)</a></li>
+                <li><a href="products/payment/cart.php">CART</a></li>
               </ul>
             </nav>
             <div class="profile-container">
@@ -75,8 +161,7 @@ if(isset($_POST['send'])){
         </header>
           
         <section class="contact">
-
-          <h1 class="title">Message Us!</h1>
+          <h1 class="title">Contact Us</h1>
 
           <?php
             if (isset($message)) {
@@ -84,12 +169,48 @@ if(isset($_POST['send'])){
                     echo "<div class='message'>$msg</div>";
                 }
             }
-            ?>
+          ?>
 
-          <form action="" method="POST">
-              <input type="text" name="name" class="box" required placeholder="Enter your name">
-              <input type="email" name="email" class="box" required placeholder="Enter your email">
-              <textarea name="msg" class="box" required placeholder="Enter your message" cols="30" rows="10"></textarea>
+          <div class="message-history">
+              <h2>Recent Messages</h2>
+              <?php if(empty($message_history)): ?>
+                  <p>No recent messages</p>
+              <?php else: ?>
+                  <?php foreach($message_history as $msg): ?>
+                  <div class="history-item <?= $msg['sender_type'] === 'user' ? 'outgoing' : 'incoming' ?>">
+                      <div class="message-direction">
+                          <?php if($msg['sender_type'] === 'user'): ?>
+                              <span>You → <?= htmlspecialchars($msg['receiver_name']) ?> (Admin)</span>
+                          <?php else: ?>
+                              <span><?= htmlspecialchars($msg['sender_name']) ?> (Admin) → You</span>
+                          <?php endif; ?>
+                      </div>
+                      <div class="history-header">
+                          <span class="history-subject"><?= htmlspecialchars($msg['subject']) ?></span>
+                          <span class="history-date"><?= date('M d, Y h:i A', strtotime($msg['created_at'])) ?></span>
+                      </div>
+                      <div class="history-message">
+                          <?= nl2br(htmlspecialchars($msg['message'])) ?>
+                      </div>
+                  </div>
+                  <?php endforeach; ?>
+              <?php endif; ?>
+          </div>
+
+          <form action="" method="POST" class="contact-form">
+              <input type="hidden" name="name" value="<?= htmlspecialchars($user_info['name'] ?? '') ?>">
+              <input type="hidden" name="email" value="<?= htmlspecialchars($user_info['email'] ?? '') ?>">
+              
+              <div class="form-group">
+                  <label for="subject">Subject:</label>
+                  <input type="text" id="subject" name="subject" class="box" required placeholder="Message subject">
+              </div>
+              
+              <div class="form-group">
+                  <label for="msg">Your Message:</label>
+                  <textarea id="msg" name="msg" class="box" required placeholder="Enter your message" cols="30" rows="10"></textarea>
+              </div>
+              
               <input type="submit" value="Send Message" class="btn" name="send">
           </form>
 

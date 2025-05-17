@@ -77,7 +77,8 @@ if (isset($_GET['delete'])) {
     <link rel="stylesheet" href="../global.css" />
     <link rel="stylesheet" href="admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-</head>
+   
+    </head>
 
 <body>
     <header>
@@ -90,7 +91,8 @@ if (isset($_GET['delete'])) {
                     <li><a href="products.php">Products</a></li>
                     <li><a href="order.php">Orders</a></li>
                     <li><a href="users.php">Users</a></li>
-                    <li><a href="messages.php">Messages</a></li>
+                    
+               <li><a href="messages.php">Messages</a></li>
                     
                     <li><a href="../logout.php" class="logout-btn">Logout</a></li>
                 </ul>

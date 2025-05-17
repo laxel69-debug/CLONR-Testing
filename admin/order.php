@@ -109,7 +109,7 @@ try {
             <h1 class="admin-title">Order Management</h1>
             
             <!-- Order Statistics Cards -->
-            <div class="stats-container">
+            <!-- <div class="stats-container">
                 <div class="stat-card total">
                     <h3>Total Orders</h3>
                     <p><?= $total_orders ?></p>
@@ -126,7 +126,7 @@ try {
                     <h3>Cancelled</h3>
                     <p><?= $cancelled_orders ?></p>
                 </div>
-            </div>
+            </div> -->
             
             <!-- Filter and Search Section -->
             <div class="filter-section">
