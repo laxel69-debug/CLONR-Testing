@@ -7,7 +7,7 @@
         <title>CLONR</title>
         <link rel="stylesheet" href="global.css"/>
         <link rel="stylesheet" href="index.css"/>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     </head>
     
@@ -29,7 +29,8 @@
                 </li>
                 <li><a href="sizechart.php">SIZE CHART</a></li>
                 <li><a href="contact.php">CONTACT US</a></li>
-                <li><a href= "products/payment/cart.php">CART</a></li>
+                
+                 <li><a href="products/payment/cart.php">CART </a></li>
               </ul>
             </nav>
             <div class="profile-container">

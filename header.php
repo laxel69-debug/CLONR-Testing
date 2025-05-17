@@ -47,8 +47,16 @@ $base_url = '/clonr/';
         <img src="<?= $base_url; ?>uploaded_img/<?= htmlspecialchars($user_data['image'] ?? 'default.png'); ?>" alt="Profile Image">
         <p><?= htmlspecialchars($user_data['name'] ?? 'Guest'); ?></p>
         <a href="<?= $base_url; ?>update_profile.php" class="btn">update profile</a>
+       <a href="<?= $base_url; ?>products/payment/cart.php" class="btn">
+        <i class="bi bi-cart"></i> </a>
+        <a href="<?= $base_url; ?>history.php" class="btn" title="Order History">
+            <i class="bi bi-clock-history"></i> 
+        </a>
+       
+
         <a href="<?= $base_url; ?>logout.php" class="delete-btn" onclick="return confirm('Are you sure you want to log out?')">logout</a>
-    <?php else: ?>
+    
+        <?php else: ?>
         <p>No user found. <a href="<?= $base_url; ?>login.php">Login</a></p>
     <?php endif; ?>
     </div>
