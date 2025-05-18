@@ -201,19 +201,19 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 15px;
+            width: 100%;
         }
         
         .search-filter-container {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            flex: 1;
-            min-width: 300px;
+             display: flex;
+            gap: 15px; /* Adds space between the search and filter boxes */
+            align-items: center;
+            width: 100%;
         }
         
         .search-box {
             flex: 1;
-            min-width: 250px;
+            min-width: 200px;
             position: relative;
         }
         
@@ -226,26 +226,35 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             font-size: 16px;
         }
         
-        .search-box i {
+            .search-box input[type="text"] {
+                width: 100%;
+                padding: 8px 10px 8px 35px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+        
+       .search-box i {
             position: absolute;
-            left: 15px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            color: #777;
+            color: #999;
         }
         
         .filter-box {
             min-width: 150px;
         }
-        
-        .filter-box select {
+
+      .filter-box select {
             width: 100%;
-            padding: 10px 15px;
+            padding: 8px 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
         }
-        
+                
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -371,9 +380,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             cursor: pointer;
         }
         
-        th.sortable:hover {
-            background-color: #f0f0f0;
-        }
+       
         
         @media (max-width: 768px) {
             .users-table table, .users-table thead, .users-table tbody, 
@@ -455,14 +462,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="error"><?= $_SESSION['error'] ?></div>
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
-            
             <div class="user-management-tools">
                 <div class="search-filter-container">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <form method="GET" action="users.php">
                             <input type="text" name="search" placeholder="Search users..." 
-                                   value="<?= htmlspecialchars($search) ?>">
+                                value="<?= htmlspecialchars($search) ?>">
                             <input type="hidden" name="status" value="<?= htmlspecialchars($status_filter) ?>">
                         </form>
                     </div>
@@ -479,9 +485,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </form>
                     </div>
                 </div>
-                
             </div>
-            
+                        
             <div class="users-table">
                 <?php if (empty($users)): ?>
                     <div class="no-results">
@@ -623,7 +628,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </main>
-
+<hr class="custom-hr">
     <footer>
         <div class="footer-content">
             <h2>CLONR - Wear the Movement</h2>
