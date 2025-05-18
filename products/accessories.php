@@ -39,10 +39,10 @@ try {
     <body>
       <header>
            <div class="container">
-              <a href="../index.php"><h1 class="title">CLONR</h1></a>
+              <a href="../main.php"><h1 class="title">CLONR</h1></a>
               <nav>
                 <ul class="navbar">
-                  <li><a href="../index.php">HOME</a></li>
+                  <li><a href="../main.php">HOME</a></li>
                   <li class="dropdown">SHOP
                     <ul class="dropdown-menu">
                       <li><a href="tshirts.php">T-shirts</a></li>

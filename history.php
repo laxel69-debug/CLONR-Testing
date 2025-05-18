@@ -29,9 +29,23 @@ foreach($completed_orders as $order) {
     foreach($products as $product) {
         preg_match('/(.*) \((\d+)\)/', $product, $matches);
         if(count($matches) === 3) {
-            // You'll need to get the actual category and image from your database
-            $category = 'shirts'; // Placeholder - replace with actual category lookup
-            $image = 'https://via.placeholder.com/50?text=Product';
+            // Fetch actual product details including image
+            $product_query = $conn->prepare("SELECT category, image, image_url FROM products WHERE name = ?");
+            $product_query->execute([trim($matches[1])]);
+            $product_details = $product_query->fetch(PDO::FETCH_ASSOC);
+            
+            $category = $product_details['category'] ?? 'unknown';
+            $image = '';
+            
+            // Determine whether to use uploaded image or URL
+            if(!empty($product_details['image_url'])) {
+                $image = $product_details['image_url'];
+            } elseif(!empty($product_details['image'])) {
+                $image = '../uploaded_img/' . $product_details['image'];
+            } else {
+                $image = 'https://via.placeholder.com/50?text=Product';
+            }
+            
             $completed_data[] = [
                 'id' => $order['id'],
                 'date' => date('Y-m-d', strtotime($order['placed_on'])),
@@ -45,15 +59,31 @@ foreach($completed_orders as $order) {
         }
     }
 }
+        
 
 $canceled_data = [];
 foreach($canceled_orders as $order) {
     $products = explode(', ', $order['total_products']);
     foreach($products as $product) {
         preg_match('/(.*) \((\d+)\)/', $product, $matches);
-        if(count($matches) === 3) {
-            $category = 'shirts'; // Placeholder - replace with actual category lookup
-            $image = 'https://via.placeholder.com/50?text=Product';
+       if(count($matches) === 3) {
+            // Fetch actual product details including image
+            $product_query = $conn->prepare("SELECT category, image, image_url FROM products WHERE name = ?");
+            $product_query->execute([trim($matches[1])]);
+            $product_details = $product_query->fetch(PDO::FETCH_ASSOC);
+            
+            $category = $product_details['category'] ?? 'unknown';
+            $image = '';
+            
+            // Determine whether to use uploaded image or URL
+            if(!empty($product_details['image_url'])) {
+                $image = $product_details['image_url'];
+            } elseif(!empty($product_details['image'])) {
+                $image = '../uploaded_img/' . $product_details['image'];
+            } else {
+                $image = 'https://via.placeholder.com/50?text=Product';
+            }
+            
             $canceled_data[] = [
                 'id' => $order['id'],
                 'date' => date('Y-m-d', strtotime($order['placed_on'])),
@@ -74,8 +104,23 @@ foreach($pending_orders as $order) {
     foreach($products as $product) {
         preg_match('/(.*) \((\d+)\)/', $product, $matches);
         if(count($matches) === 3) {
-            $category = 'shirts'; // Placeholder - replace with actual category lookup
-            $image = 'https://via.placeholder.com/50?text=Product';
+            // Fetch actual product details including image
+            $product_query = $conn->prepare("SELECT category, image, image_url FROM products WHERE name = ?");
+            $product_query->execute([trim($matches[1])]);
+            $product_details = $product_query->fetch(PDO::FETCH_ASSOC);
+            
+            $category = $product_details['category'] ?? 'unknown';
+            $image = '';
+            
+            // Determine whether to use uploaded image or URL
+            if(!empty($product_details['image_url'])) {
+                $image = $product_details['image_url'];
+            } elseif(!empty($product_details['image'])) {
+                $image = '../uploaded_img/' . $product_details['image'];
+            } else {
+                $image = 'https://via.placeholder.com/50?text=Product';
+            }
+            
             $pending_data[] = [
                 'id' => $order['id'],
                 'date' => date('Y-m-d', strtotime($order['placed_on'])),

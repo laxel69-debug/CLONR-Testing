@@ -40,10 +40,10 @@ try {
     }
 
     // Fetch order items
-    $stmt = $conn->prepare("SELECT oi.*, p.name as product_name, p.image 
-                          FROM order_items oi 
-                          JOIN products p ON oi.product_id = p.id 
-                          WHERE oi.order_id = ?");
+    $stmt = $conn->prepare("SELECT oi.*, p.name as product_name 
+                          FROM orders oi 
+                          JOIN products p ON oi.id = p.id 
+                          WHERE oi.id = ?");
     $stmt->execute([$order_id]);
     $order_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -73,7 +73,7 @@ try {
                     <li><a href="order.php">Orders</a></li>
                     <li><a href="users.php">Users</a></li>
                     
-                    <li><a href="messages.php">Messages</a></li>
+                    <li><a href="messages.php">Messages</a>
                     <li><a href="../AdminUpdateProfile.php">Profile</a></li>
                     <li><a href="../logout.php" class="logout-btn">Logout</a></li>
                 </ul>
@@ -143,7 +143,7 @@ try {
                     <h3>Order Items</h3>
                     <table class="items-table">
                         <thead>
-                            <tr>
+                            <tr class="table-header">
                                 <th>Product</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
@@ -161,9 +161,9 @@ try {
                                         <span><?= $item['product_name'] ?></span>
                                     </div>
                                 </td>
-                                <td>₱<?= number_format($item['price'], 2) ?></td>
+                                <td>₱<?= number_format($item['total_price'], 2) ?></td>
                                 <td><?= $item['quantity'] ?></td>
-                                <td>₱<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                                <td>₱<?= number_format($item['total_price'] ) ?></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

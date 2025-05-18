@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 17, 2025 at 03:55 PM
+-- Generation Time: May 18, 2025 at 07:48 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -97,6 +97,15 @@ CREATE TABLE `messages` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `parent_id`, `user_id`, `sender_id`, `sender_type`, `subject`, `message`, `is_read`, `is_archived`, `is_important`, `created_at`) VALUES
+(16, NULL, 16, 13, 'admin', 'Your Order', 'shabu mo idol', 0, 0, 0, '2025-05-17 14:44:48'),
+(17, NULL, 13, 11, 'user', 'Your Order', 'tay gatas namin ', 1, 0, 0, '2025-05-17 14:45:34'),
+(18, NULL, 11, 13, 'admin', 'Your Order', 'tang ina mo', 0, 0, 0, '2025-05-17 14:46:34');
+
 -- --------------------------------------------------------
 
 --
@@ -141,7 +150,8 @@ INSERT INTO `orders` (`id`, `user_id`, `name`, `number`, `email`, `method`, `add
 (17, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '0000-00-00 00:00:00', 'Pending'),
 (19, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '2025-05-17 09:26:07', 'Pending'),
 (20, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED JACKET - CREAM BEIGE (1)', 3000.00, '2025-05-17 15:40:43', 'Pending'),
-(21, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '2025-05-17 15:59:42', 'Pending');
+(21, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '2025-05-17 15:59:42', 'Pending'),
+(22, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER SPLICED SHORTS - WHITE/GREY (4), CIPHER TEE 2025 - BLACK AND WHITE (1)', 5400.00, '2025-05-18 13:30:48', 'Pending');
 
 -- --------------------------------------------------------
 
@@ -178,11 +188,16 @@ INSERT INTO `order_history` (`id`, `order_id`, `status`, `notes`, `updated_by`, 
 --
 
 CREATE TABLE `order_items` (
-  `id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
+  `order_id` int(10) UNSIGNED NOT NULL,
+  `product_id` int(10) UNSIGNED NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `product_description` text DEFAULT NULL,
+  `product_category` varchar(100) NOT NULL,
+  `product_image_url` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `quantity` int(11) NOT NULL
+  `quantity` int(10) UNSIGNED NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -192,13 +207,97 @@ CREATE TABLE `order_items` (
 --
 
 CREATE TABLE `products` (
-  `id` int(100) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `category` varchar(20) NOT NULL,
-  `details` varchar(500) NOT NULL,
-  `price` int(100) NOT NULL,
-  `image` varchar(100) NOT NULL
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `category` varchar(100) NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `category`, `image`, `image_url`, `created_at`, `updated_at`) VALUES
+(1, 'GRAND PRIX ENAMEL PIN', NULL, 300.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/GRANDPRIXENAMELPIN.png?v=1733378380', '2025-05-16 21:51:44', '2025-05-17 00:26:52'),
+(2, 'HYPER GARAGE STICKER PACK', NULL, 350.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/HYPERGARAGESTICKERPACK.jpg?v=1732590086', '2025-05-16 23:54:52', '2025-05-16 23:54:52'),
+(3, 'HYPER GARAGE WOVEN KEYCHAIN', '', 300.00, 'tshirts', '13.jpg', 'https://dbtkco.com/cdn/shop/files/HYPERGARAGEWOVENTAG1.jpg?v=1732589996', '2025-05-16 23:57:29', '2025-05-18 04:44:24'),
+(4, 'HYPER GARAGE METAL KEYCHAIN', NULL, 350.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/HYPERGARAGEMETALKEYCHAIN.jpg?v=1732589925', '2025-05-16 23:57:29', '2025-05-16 23:57:29'),
+(5, 'DBTK HOLOGRAPHIC STICKER PACK', NULL, 300.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/products/2_2_1.jpg?v=1677252535', '2025-05-17 00:23:29', '2025-05-17 00:23:29'),
+(6, 'DBTK EVERMORE SLING BAG - BLACK', NULL, 950.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/DBTKEVERMORESLINGBAG1.jpg?v=1734082111', '2025-05-17 00:24:56', '2025-05-17 00:24:56'),
+(7, 'WOODLAND CIPHER FLASK - BLACK/GRAY', NULL, 1100.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/WOODLAND_CIPHER_FLASK_1.jpg?v=1721960065', '2025-05-17 00:24:56', '2025-05-17 00:24:56'),
+(8, 'DBTK x MHA ENAMEL PIN', NULL, 300.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/products/enamel.jpg?v=1661509910', '2025-05-17 00:25:29', '2025-05-17 00:25:29'),
+(9, 'WOODLAND CIPHER UMBRELLA', NULL, 900.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/WOODLANDCIPHERUMBRELLA1.jpg?v=1721958145', '2025-05-17 00:26:22', '2025-05-17 00:26:22'),
+(10, 'DBTK SLANT BODY BAG', NULL, 1350.00, 'Accessories', NULL, 'https://dbtkco.com/cdn/shop/files/BAG1_9bd676b9-3db7-4ea8-adf7-190d5d446be7.jpg?v=1716898728', '2025-05-17 00:26:22', '2025-05-17 00:26:22'),
+(11, 'CIPHER STREAK CREWNECK - MID GRAY/ OFF WHITE', NULL, 2300.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHER_STREAK_CREWNECK_1.jpg?v=1728695354', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(12, 'CIPHER STREAK CREWNECK - BROWN CREAM', NULL, 2300.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHERSTREAKCREWNECK3.jpg?v=1728695291', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(13, 'D-SPARK PANELED JACKET - CREAM BEIGE', NULL, 3000.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/D-SPARKPANELEDJACKET5.jpg?v=1728696742', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(14, 'OAKSHADE WORKWEAR JACKET', NULL, 2800.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/OAKSHADEWORKWEARJACKET1.jpg?v=1737095917', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(15, 'SPARK PANELED JACKET - BLACK', NULL, 3300.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/FULL-ZIP_SPARK_3.jpg?v=1737099889', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(16, 'COMPILATION HOODIE - OFF-WHITE', NULL, 3800.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/Artboard3_c03fdea3-ed94-4eb1-9c79-da90934744c5.jpg?v=1734081482', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(17, 'SPARK PANELED JACKET - BLUEBERRY', NULL, 3300.00, 'Jackets', NULL, 'https://dbtkco.com/cdn/shop/files/FULL-ZIPSPARK1.jpg?v=1737100793', '2025-05-17 04:49:20', '2025-05-17 04:49:20'),
+(18, 'CIPHER SPLICED SHORTS - KHAKI/CREAM', NULL, 1100.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHERSPLICEDSHORTS3.jpg?v=1734574023', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(19, 'CIPHER SPLICED SHORTS - WHITE/GREY', NULL, 1100.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHERSPLICEDSHORTS5.jpg?v=1734573884', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(20, 'SWIFT SHORTS - MULTI TONAL BLACK GRAY', NULL, 1100.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/SWIFTSHORTS1.jpg?v=1728698184', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(21, 'CIPHER SPLICED SHORTS - BLACK/GRAY', NULL, 1100.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHERSPLICEDSHORTS1.jpg?v=1734573884', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(22, 'CIPHER FLOCK SHORTS - ACID WASHED BLACK', NULL, 1500.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHER_FLOCK_SHORTS_1.jpg?v=1724923454', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(23, 'CIPHER FLOCK SHORTS - ACID DARK GRAY', NULL, 1500.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHERFLOCKSHORTS2_d69e22f6-75e3-4bc8-99a9-161f48937d9c.jpg?v=1733981325', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(24, 'GRAND PRIX SHORTS - CREAM', NULL, 1800.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/GRANDPRIXSHORTS3.jpg?v=1733377627', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(25, 'CIPHER FLOCK SHORTS - ACID WASHED PINK', NULL, 1500.00, 'Shorts', NULL, 'https://dbtkco.com/cdn/shop/files/CIPHERFLOCKSHORTS2.jpg?v=1724922721', '2025-05-17 05:17:55', '2025-05-17 05:17:55'),
+(26, 'CIPHER TEE 2025 - BLACK AND NEON GREEN', NULL, 1000.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/SidePocketBlackShirtFront.jpg?v=1742283606', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(27, 'CIPHER TEE 2025 - BLACK AND WHITE', NULL, 1000.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/Cipher_Black_and_White_Shirt_Front.jpg?v=1742283658', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(28, 'SLANT TEE 2025 - CREAM AND BLACK', NULL, 1100.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/Slant_Cream_Shirt_Front.jpg?v=1742283821', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(29, 'CIPHER TEE 2025 - BLACK AND WHITE', NULL, 1000.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/Slant_Black_White_Shirt_Front.jpg?v=1742283943', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(30, 'MOB V2 TEE - BROWN', NULL, 1500.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/MOBV21.jpg?v=1735981287', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(31, 'DBTK ARC TEE - WHITE', NULL, 1450.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/DBTKARCTEE3.jpg?v=1715245989', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(32, 'COUPE TEE - WHITE', NULL, 1000.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/COUPE3.jpg?v=1732697599', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(33, 'Nationals Fruits Tee - White', NULL, 1600.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/NationalsFruitsTee1.jpg?v=1733130710', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(34, 'INFINITE CHASE TEE - WHITE', NULL, 950.00, 'T-shirts', NULL, 'https://dbtkco.com/cdn/shop/files/INFINITECHASE3.jpg?v=1733898703', '2025-05-17 05:50:44', '2025-05-17 05:50:44'),
+(35, 'OAKSHADE WIDE PANTS', NULL, 2500.00, 'Pants', NULL, 'https://dbtkco.com/cdn/shop/files/OAKSHADEWIDEPANTS1.jpg?v=1737096791', '2025-05-17 06:08:46', '2025-05-17 06:08:46'),
+(36, 'D-SPARK PANELED PANTS - CREAM BEIGE', NULL, 2700.00, 'Pants', NULL, 'https://dbtkco.com/cdn/shop/files/D-SPARKPANELEDPANTS3.jpg?v=1728696742', '2025-05-17 06:08:46', '2025-05-17 06:08:46'),
+(37, 'RACING PANTS', NULL, 5995.00, 'Pants', NULL, 'https://dbtkco.com/cdn/shop/files/RACING_PANTS.jpg?v=1741421203', '2025-05-17 06:08:46', '2025-05-17 06:08:46'),
+(38, 'MERGE WIDE PANTS - BLACK', NULL, 2300.00, 'Pants', NULL, 'https://dbtkco.com/cdn/shop/files/MERGE_WIDE_PANTS_1.jpg?v=1737099107', '2025-05-17 06:08:46', '2025-05-17 06:08:46'),
+(39, 'MERGE WIDE PANTS - LIGHT GRAY', NULL, 2300.00, 'Pants', NULL, 'https://dbtkco.com/cdn/shop/files/MERGEWIDEPANTS3.jpg?v=1737099509', '2025-05-17 06:08:46', '2025-05-17 06:08:46'),
+(40, 'SPARK PANELED WIDE PANTS - BLACK', NULL, 2500.00, 'Pants', NULL, 'https://dbtkco.com/cdn/shop/files/SPARKPANELEDWIDEPANTS3.jpg?v=1737103509', '2025-05-17 06:08:46', '2025-05-17 06:08:46');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_images`
+--
+
+CREATE TABLE `product_images` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `product_id` int(10) UNSIGNED NOT NULL,
+  `image_url` varchar(255) NOT NULL,
+  `sort_order` int(10) UNSIGNED DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_images`
+--
+
+INSERT INTO `product_images` (`id`, `product_id`, `image_url`, `sort_order`, `created_at`, `updated_at`) VALUES
+(1, 11, 'https://dbtkco.com/cdn/shop/files/CIPHERSTREAKCREWNECK2.jpg?v=1728695291', 0, '2025-05-17 04:57:56', '2025-05-17 04:57:56'),
+(2, 11, 'https://dbtkco.com/cdn/shop/files/Artboard122.jpg?v=1728695292', 1, '2025-05-17 04:57:56', '2025-05-17 04:57:56'),
+(3, 12, 'https://dbtkco.com/cdn/shop/files/CIPHERSTREAKCREWNECK4.jpg?v=1728695292', 0, '2025-05-17 04:57:56', '2025-05-17 04:57:56'),
+(4, 12, 'https://dbtkco.com/cdn/shop/files/Artboard119.jpg?v=1728695292', 1, '2025-05-17 04:57:56', '2025-05-17 04:57:56'),
+(5, 13, 'https://dbtkco.com/cdn/shop/files/D-SPARKPANELEDJACKET6.jpg?v=1728696743', 0, '2025-05-17 04:57:56', '2025-05-17 04:57:56'),
+(6, 13, 'https://dbtkco.com/cdn/shop/files/Artboard91.jpg?v=1728696742', 1, '2025-05-17 04:57:56', '2025-05-17 04:57:56'),
+(7, 14, 'https://dbtkco.com/cdn/shop/files/OAKSHADEWORKWEARJACKET2.jpg?v=1737095917', 0, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(8, 14, 'https://dbtkco.com/cdn/shop/files/OAKSHADEPOLO.webp?v=1737095917', 1, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(9, 15, 'https://dbtkco.com/cdn/shop/files/FULL-ZIP_SPARK_4.jpg?v=1737099889', 0, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(10, 15, 'https://dbtkco.com/cdn/shop/files/FULL_ZIP_BLACK.webp?v=1737099889', 1, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(11, 16, 'https://dbtkco.com/cdn/shop/files/Artboard4_313ff247-c6af-4876-b63d-2fb07b4176be.jpg?v=1734081482', 0, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(12, 16, 'https://dbtkco.com/cdn/shop/files/DBT04646-Enhanced-NR.webp?v=1734081674', 1, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(13, 17, 'https://dbtkco.com/cdn/shop/files/FULL-ZIPSPARK2.jpg?v=1737100793', 0, '2025-05-17 04:57:57', '2025-05-17 04:57:57'),
+(14, 17, 'https://dbtkco.com/cdn/shop/files/SPARK_PANELED_JACKET_BLACK_3a5f5ec0-0682-4669-9d04-6e33d60290f5.webp?v=1737100793', 1, '2025-05-17 04:57:57', '2025-05-17 04:57:57');
 
 -- --------------------------------------------------------
 
@@ -225,13 +324,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `user_type`, `image`, `phone`, `created_acc`, `Status`, `balance`, `money`) VALUES
-(6, 'Mi', 'a@a', '0cc175b9c0f1b6a831c399e269772661', 'user', 'Ace.jpg', '0', '2025-05-16 07:21:33', 'Active', 0, 0),
+(6, 'Mi', 'a@a', '0cc175b9c0f1b6a831c399e269772661', 'user', 'Ace.jpg', '0', '2025-05-16 07:21:33', 'active', 0, 0),
 (11, 'Ryan Lozana', 'ral531715@gmail.com', 'e807f1fcf82d132f9bb018ca6738a19f', 'user', '68272061a3dde.png', '0', '2025-05-16 07:21:33', 'Active', 0, 3005),
-(12, 'aaa', 'a@a.c', '12f9cf6998d52dbe773b06f848bb3608', 'user', 'IMG_7372 (1).jpg', '0', '2025-05-16 07:21:33', 'banned', 0, 0),
+(12, 'aaa', 'a@a.c', '12f9cf6998d52dbe773b06f848bb3608', 'user', 'IMG_7372 (1).jpg', '0', '2025-05-16 07:21:33', 'active', 0, 0),
 (13, 'Zeck', 'Zekaido123@gmail.com', '247f8b5944da561cd6c2cda1748fb081', 'admin', '6826ec2ff24dc.jpg', '0', '2025-05-16 07:21:33', 'Active', 0, 0),
 (14, 'Ryan Lozana', 'ral5131715@gmail.com', '25d55ad283aa400af464c76d713c07ad', 'user', 'Ace.jpg', '09166245138', '2025-05-16 07:21:33', 'Active', 0, 0),
 (15, 'Ryan', 'kazutokir@gmail.com', '25f9e794323b453885f5181f1b624d0b', 'user', '205d97f5-14af-4ff4-b3d8-dadcb3bc217c.jfif', '9606202043', '2025-05-16 07:37:25', 'Active', 0, 9992700),
-(16, 'Zeck', 'Zekaido13@gmail.com', '247f8b5944da561cd6c2cda1748fb081', 'user', 'Ace.jpg', '0921420397', '2025-05-16 18:52:03', 'Active', 0, 9965600);
+(16, 'Zekkkkkk', 'Zekaido13@gmail.com', '247f8b5944da561cd6c2cda1748fb081', 'user', 'Ace.jpg', '0921420397', '2025-05-16 18:52:03', 'Active', 0, 9960200);
 
 --
 -- Indexes for dumped tables
@@ -306,19 +405,19 @@ ALTER TABLE `admin_logs`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `order_history`
@@ -330,13 +429,13 @@ ALTER TABLE `order_history`
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -367,105 +466,7 @@ ALTER TABLE `messages`
 ALTER TABLE `order_history`
   ADD CONSTRAINT `order_history_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   ADD CONSTRAINT `order_history_ibfk_2` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `order_items`
---
-ALTER TABLE `order_items`
-  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
-  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 COMMIT;
-
---
--- Table structure and contents for table `products`
---
-
-CREATE TABLE `products` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `category` varchar(100) NOT NULL,
-  `image_url` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `category`, `image_url`, `created_at`, `updated_at`) VALUES
-(1, 'GRAND PRIX ENAMEL PIN', NULL, 300.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/GRANDPRIXENAMELPIN.png?v=1733378380', '2025-05-17 05:51:44', '2025-05-17 08:26:52'),
-(2, 'HYPER GARAGE STICKER PACK', NULL, 350.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/HYPERGARAGESTICKERPACK.jpg?v=1732590086', '2025-05-17 07:54:52', '2025-05-17 07:54:52'),
-(3, 'HYPER GARAGE WOVEN KEYCHAIN', NULL, 300.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/HYPERGARAGEWOVENTAG1.jpg?v=1732589996', '2025-05-17 07:57:29', '2025-05-17 07:57:29'),
-(4, 'HYPER GARAGE METAL KEYCHAIN', NULL, 350.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/HYPERGARAGEMETALKEYCHAIN.jpg?v=1732589925', '2025-05-17 07:57:29', '2025-05-17 07:57:29'),
-(5, 'DBTK HOLOGRAPHIC STICKER PACK', NULL, 300.00, 'Accessories', 'https://dbtkco.com/cdn/shop/products/2_2_1.jpg?v=1677252535', '2025-05-17 08:23:29', '2025-05-17 08:23:29'),
-(6, 'DBTK EVERMORE SLING BAG - BLACK', NULL, 950.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/DBTKEVERMORESLINGBAG1.jpg?v=1734082111', '2025-05-17 08:24:56', '2025-05-17 08:24:56'),
-(7, 'WOODLAND CIPHER FLASK - BLACK/GRAY', NULL, 1100.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/WOODLAND_CIPHER_FLASK_1.jpg?v=1721960065', '2025-05-17 08:24:56', '2025-05-17 08:24:56'),
-(8, 'DBTK x MHA ENAMEL PIN', NULL, 300.00, 'Accessories', 'https://dbtkco.com/cdn/shop/products/enamel.jpg?v=1661509910', '2025-05-17 08:25:29', '2025-05-17 08:25:29'),
-(9, 'WOODLAND CIPHER UMBRELLA', NULL, 900.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/WOODLANDCIPHERUMBRELLA1.jpg?v=1721958145', '2025-05-17 08:26:22', '2025-05-17 08:26:22'),
-(10, 'DBTK SLANT BODY BAG', NULL, 1350.00, 'Accessories', 'https://dbtkco.com/cdn/shop/files/BAG1_9bd676b9-3db7-4ea8-adf7-190d5d446be7.jpg?v=1716898728', '2025-05-17 08:26:22', '2025-05-17 08:26:22'),
-(11, 'CIPHER STREAK CREWNECK - MID GRAY/ OFF WHITE', NULL, 2300.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/CIPHER_STREAK_CREWNECK_1.jpg?v=1728695354', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(12, 'CIPHER STREAK CREWNECK - BROWN CREAM', NULL, 2300.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/CIPHERSTREAKCREWNECK3.jpg?v=1728695291', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(13, 'D-SPARK PANELED JACKET - CREAM BEIGE', NULL, 3000.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/D-SPARKPANELEDJACKET5.jpg?v=1728696742', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(14, 'OAKSHADE WORKWEAR JACKET', NULL, 2800.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/OAKSHADEWORKWEARJACKET1.jpg?v=1737095917', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(15, 'SPARK PANELED JACKET - BLACK', NULL, 3300.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/FULL-ZIP_SPARK_3.jpg?v=1737099889', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(16, 'COMPILATION HOODIE - OFF-WHITE', NULL, 3800.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/Artboard3_c03fdea3-ed94-4eb1-9c79-da90934744c5.jpg?v=1734081482', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(17, 'SPARK PANELED JACKET - BLUEBERRY', NULL, 3300.00, 'Jackets', 'https://dbtkco.com/cdn/shop/files/FULL-ZIPSPARK1.jpg?v=1737100793', '2025-05-17 12:49:20', '2025-05-17 12:49:20'),
-(18, 'CIPHER SPLICED SHORTS - KHAKI/CREAM', NULL, 1100.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/CIPHERSPLICEDSHORTS3.jpg?v=1734574023', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(19, 'CIPHER SPLICED SHORTS - WHITE/GREY', NULL, 1100.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/CIPHERSPLICEDSHORTS5.jpg?v=1734573884', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(20, 'SWIFT SHORTS - MULTI TONAL BLACK GRAY', NULL, 1100.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/SWIFTSHORTS1.jpg?v=1728698184', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(21, 'CIPHER SPLICED SHORTS - BLACK/GRAY', NULL, 1100.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/CIPHERSPLICEDSHORTS1.jpg?v=1734573884', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(22, 'CIPHER FLOCK SHORTS - ACID WASHED BLACK', NULL, 1500.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/CIPHER_FLOCK_SHORTS_1.jpg?v=1724923454', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(23, 'CIPHER FLOCK SHORTS - ACID DARK GRAY', NULL, 1500.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/CIPHERFLOCKSHORTS2_d69e22f6-75e3-4bc8-99a9-161f48937d9c.jpg?v=1733981325', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(24, 'GRAND PRIX SHORTS - CREAM', NULL, 1800.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/GRANDPRIXSHORTS3.jpg?v=1733377627', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(25, 'CIPHER FLOCK SHORTS - ACID WASHED PINK', NULL, 1500.00, 'Shorts', 'https://dbtkco.com/cdn/shop/files/CIPHERFLOCKSHORTS2.jpg?v=1724922721', '2025-05-17 13:17:55', '2025-05-17 13:17:55'),
-(26, 'CIPHER TEE 2025 - BLACK AND NEON GREEN', NULL, 1000.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/SidePocketBlackShirtFront.jpg?v=1742283606', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(27, 'CIPHER TEE 2025 - BLACK AND WHITE', NULL, 1000.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/Cipher_Black_and_White_Shirt_Front.jpg?v=1742283658', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(28, 'SLANT TEE 2025 - CREAM AND BLACK', NULL, 1100.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/Slant_Cream_Shirt_Front.jpg?v=1742283821', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(29, 'CIPHER TEE 2025 - BLACK AND WHITE', NULL, 1000.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/Slant_Black_White_Shirt_Front.jpg?v=1742283943', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(30, 'MOB V2 TEE - BROWN', NULL, 1500.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/MOBV21.jpg?v=1735981287', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(31, 'DBTK ARC TEE - WHITE', NULL, 1450.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/DBTKARCTEE3.jpg?v=1715245989', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(32, 'COUPE TEE - WHITE', NULL, 1000.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/COUPE3.jpg?v=1732697599', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(33, 'Nationals Fruits Tee - White', NULL, 1600.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/NationalsFruitsTee1.jpg?v=1733130710', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(34, 'INFINITE CHASE TEE - WHITE', NULL, 950.00, 'T-shirts', 'https://dbtkco.com/cdn/shop/files/INFINITECHASE3.jpg?v=1733898703', '2025-05-17 13:50:44', '2025-05-17 13:50:44'),
-(35, 'OAKSHADE WIDE PANTS', NULL, 2500.00, 'Pants', 'https://dbtkco.com/cdn/shop/files/OAKSHADEWIDEPANTS1.jpg?v=1737096791', '2025-05-17 14:08:46', '2025-05-17 14:08:46'),
-(36, 'D-SPARK PANELED PANTS - CREAM BEIGE', NULL, 2700.00, 'Pants', 'https://dbtkco.com/cdn/shop/files/D-SPARKPANELEDPANTS3.jpg?v=1728696742', '2025-05-17 14:08:46', '2025-05-17 14:08:46'),
-(37, 'RACING PANTS', NULL, 5995.00, 'Pants', 'https://dbtkco.com/cdn/shop/files/RACING_PANTS.jpg?v=1741421203', '2025-05-17 14:08:46', '2025-05-17 14:08:46'),
-(38, 'MERGE WIDE PANTS - BLACK', NULL, 2300.00, 'Pants', 'https://dbtkco.com/cdn/shop/files/MERGE_WIDE_PANTS_1.jpg?v=1737099107', '2025-05-17 14:08:46', '2025-05-17 14:08:46'),
-(39, 'MERGE WIDE PANTS - LIGHT GRAY', NULL, 2300.00, 'Pants', 'https://dbtkco.com/cdn/shop/files/MERGEWIDEPANTS3.jpg?v=1737099509', '2025-05-17 14:08:46', '2025-05-17 14:08:46'),
-(40, 'SPARK PANELED WIDE PANTS - BLACK', NULL, 2500.00, 'Pants', 'https://dbtkco.com/cdn/shop/files/SPARKPANELEDWIDEPANTS3.jpg?v=1737103509', '2025-05-17 14:08:46', '2025-05-17 14:08:46');
-
-
-
---
--- Table structure and contents for table `product_images`
---
-
-CREATE TABLE `product_images` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `image_url` varchar(255) NOT NULL,
-  `sort_order` int(10) UNSIGNED DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-INSERT INTO `product_images` (`id`, `product_id`, `image_url`, `sort_order`, `created_at`, `updated_at`) VALUES
-(1, 11, 'https://dbtkco.com/cdn/shop/files/CIPHERSTREAKCREWNECK2.jpg?v=1728695291', 0, '2025-05-17 12:57:56', '2025-05-17 12:57:56'),
-(2, 11, 'https://dbtkco.com/cdn/shop/files/Artboard122.jpg?v=1728695292', 1, '2025-05-17 12:57:56', '2025-05-17 12:57:56'),
-(3, 12, 'https://dbtkco.com/cdn/shop/files/CIPHERSTREAKCREWNECK4.jpg?v=1728695292', 0, '2025-05-17 12:57:56', '2025-05-17 12:57:56'),
-(4, 12, 'https://dbtkco.com/cdn/shop/files/Artboard119.jpg?v=1728695292', 1, '2025-05-17 12:57:56', '2025-05-17 12:57:56'),
-(5, 13, 'https://dbtkco.com/cdn/shop/files/D-SPARKPANELEDJACKET6.jpg?v=1728696743', 0, '2025-05-17 12:57:56', '2025-05-17 12:57:56'),
-(6, 13, 'https://dbtkco.com/cdn/shop/files/Artboard91.jpg?v=1728696742', 1, '2025-05-17 12:57:56', '2025-05-17 12:57:56'),
-(7, 14, 'https://dbtkco.com/cdn/shop/files/OAKSHADEWORKWEARJACKET2.jpg?v=1737095917', 0, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(8, 14, 'https://dbtkco.com/cdn/shop/files/OAKSHADEPOLO.webp?v=1737095917', 1, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(9, 15, 'https://dbtkco.com/cdn/shop/files/FULL-ZIP_SPARK_4.jpg?v=1737099889', 0, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(10, 15, 'https://dbtkco.com/cdn/shop/files/FULL_ZIP_BLACK.webp?v=1737099889', 1, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(11, 16, 'https://dbtkco.com/cdn/shop/files/Artboard4_313ff247-c6af-4876-b63d-2fb07b4176be.jpg?v=1734081482', 0, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(12, 16, 'https://dbtkco.com/cdn/shop/files/DBT04646-Enhanced-NR.webp?v=1734081674', 1, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(13, 17, 'https://dbtkco.com/cdn/shop/files/FULL-ZIPSPARK2.jpg?v=1737100793', 0, '2025-05-17 12:57:57', '2025-05-17 12:57:57'),
-(14, 17, 'https://dbtkco.com/cdn/shop/files/SPARK_PANELED_JACKET_BLACK_3a5f5ec0-0682-4669-9d04-6e33d60290f5.webp?v=1737100793', 1, '2025-05-17 12:57:57', '2025-05-17 12:57:57');
-
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -1,6 +1,6 @@
 <?php
 
-include '../../db_connect.php'; 
+include '../../config.php'; 
 
 
 if (!isset($conn) || !$conn) {

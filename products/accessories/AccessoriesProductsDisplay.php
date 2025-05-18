@@ -4,7 +4,7 @@
 // If your db credentials are not in a separate file,
 // include the PDO connection code directly here as in Accessories.php
 // and adjust paths if necessary.
-include '../../db_connect.php'; // Adjust path as needed if db_connect.php is elsewhere
+include '../../config.php'; // Adjust path as needed if db_connect.php is elsewhere
 
 // Use the $conn variable established in db_connect.php
 if (!isset($conn) || !$conn) {
