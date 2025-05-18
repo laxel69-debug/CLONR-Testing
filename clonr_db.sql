@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 18, 2025 at 07:48 AM
+-- Generation Time: May 18, 2025 at 02:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,7 +45,15 @@ INSERT INTO `admin_logs` (`id`, `admin_id`, `action`, `timestamp`) VALUES
 (4, 13, 'Updated order #6 status to cancelled with notes: Unknown user', '2025-05-16 21:36:08'),
 (5, 13, 'Updated order #7 status to cancelled', '2025-05-16 21:36:20'),
 (6, 13, 'Updated order #8 status to completed with notes: Your payment has receive you may now wait till you...', '2025-05-16 21:59:46'),
-(7, 13, 'Updated order #10 status to completed', '2025-05-17 03:02:37');
+(7, 13, 'Updated order #10 status to completed', '2025-05-17 03:02:37'),
+(8, 13, 'Changed order #29 status to pending', '2025-05-18 18:27:43'),
+(9, 13, 'Changed order #25 status to completed', '2025-05-18 18:28:02'),
+(10, 13, 'Changed order #25 status to completed', '2025-05-18 18:28:10'),
+(11, 13, 'Changed order #24 status to completed', '2025-05-18 18:28:28'),
+(12, 13, 'Changed order #23 status to completed', '2025-05-18 18:28:46'),
+(13, 13, 'Changed order #22 status to cancelled', '2025-05-18 18:28:59'),
+(14, 13, 'Changed order #5 status to completed', '2025-05-18 18:30:40'),
+(15, 13, 'Changed order #22 status to pending', '2025-05-18 18:30:47');
 
 -- --------------------------------------------------------
 
@@ -135,13 +143,13 @@ INSERT INTO `orders` (`id`, `user_id`, `name`, `number`, `email`, `method`, `add
 (2, 13, 'Zeck', 12345, 'Zekaido123@gmail.com', 'cash on delivery', '1 paz Tugatog Malabon Manila Phillippines', ', CIPHER SPLICED SHORTS - KHAKI/CREAM ( 1 ), CIPHER SPLICED SHORTS - KHAKI/CREAM ( 1 )', 2200.00, '0000-00-00 00:00:00', 'Pending'),
 (3, 13, 'Zeck', 2147483647, 'Zekaido123@gmail.com', 'cash on delivery', '112213 13awcw langka Meycauayan Bulacan Phillipines', ', CIPHER TEE 2025 - BLACK AND WHITE ( 1 ), CIPHER SPLICED SHORTS - BLACK/GRAY ( 1 )', 2100.00, '0000-00-00 00:00:00', 'completed'),
 (4, 11, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'RACING PANTS (1), CIPHER TEE 2025 - BLACK AND WHITE (1)', 6995.00, '0000-00-00 00:00:00', 'completed'),
-(5, 15, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', ', CIPHER TEE 2025 - BLACK AND WHITE ( 1 )', 1000.00, '0000-00-00 00:00:00', 'Pending'),
+(5, 15, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', ', CIPHER TEE 2025 - BLACK AND WHITE ( 1 )', 1000.00, '0000-00-00 00:00:00', 'completed'),
 (6, 15, '', 0, '', '', '    ', 'D-SPARK PANELED PANTS - CREAM BEIGE (1)', 2700.00, '0000-00-00 00:00:00', 'cancelled'),
 (7, 15, '', 0, '', '', '    ', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '0000-00-00 00:00:00', 'cancelled'),
 (8, 15, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '0000-00-00 00:00:00', 'completed'),
 (9, 15, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'RACING PANTS (1), SWIFT SHORTS - MULTI TONAL BLACK GRAY (1)', 7095.00, '0000-00-00 00:00:00', 'canceled'),
 (10, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - MID GRAY/ OFF WHITE (1), D-SPARK PANELED JACKET - CREAM BEIGE (1), OAKSHADE WIDE PANTS (1), GRAND PRIX ENAMEL PIN (1), CIPHER SPLICED SHORTS - KHAKI/CREAM (1)', 9200.00, '0000-00-00 00:00:00', 'completed'),
-(11, 16, 'Ryan Lozana', 91234567, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED JACKET - CREAM BEIGE (1)', 3000.00, '0000-00-00 00:00:00', 'Pending'),
+(11, 16, 'Ryan Lozana', 91234567, 'ral531715@gmail.com', 'gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED JACKET - CREAM BEIGE (1)', 3000.00, '0000-00-00 00:00:00', 'shipped'),
 (12, 16, 'Ryan Lozana', 912645698, 'ral531715@gmail.com', '', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER TEE 2025 - BLACK AND WHITE (1)', 1000.00, '0000-00-00 00:00:00', 'Pending'),
 (13, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED JACKET - CREAM BEIGE (1)', 3000.00, '0000-00-00 00:00:00', 'Pending'),
 (14, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '0000-00-00 00:00:00', 'Pending'),
@@ -151,7 +159,13 @@ INSERT INTO `orders` (`id`, `user_id`, `name`, `number`, `email`, `method`, `add
 (19, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '2025-05-17 09:26:07', 'Pending'),
 (20, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED JACKET - CREAM BEIGE (1)', 3000.00, '2025-05-17 15:40:43', 'Pending'),
 (21, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (1)', 2300.00, '2025-05-17 15:59:42', 'Pending'),
-(22, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER SPLICED SHORTS - WHITE/GREY (4), CIPHER TEE 2025 - BLACK AND WHITE (1)', 5400.00, '2025-05-18 13:30:48', 'Pending');
+(22, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER SPLICED SHORTS - WHITE/GREY (4), CIPHER TEE 2025 - BLACK AND WHITE (1)', 5400.00, '2025-05-18 13:30:48', 'pending'),
+(23, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER TEE 2025 - BLACK AND NEON GREEN (1)', 1000.00, '2025-05-18 14:07:48', 'completed'),
+(24, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER TEE 2025 - BLACK AND WHITE (1), CIPHER STREAK CREWNECK - BROWN CREAM (1), CIPHER TEE 2025 - BLACK AND WHITE (5)', 8300.00, '2025-05-18 17:03:05', 'completed'),
+(25, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'MOB V2 TEE - BROWN (1), MOB V2 TEE - BROWN (1), D-SPARK PANELED PANTS - CREAM BEIGE (1), D-SPARK PANELED PANTS - CREAM BEIGE (5)', 19200.00, '2025-05-18 17:32:44', 'processing'),
+(29, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'CIPHER STREAK CREWNECK - BROWN CREAM (5), HYPER GARAGE STICKER PACK (5)', 13250.00, '2025-05-18 18:11:29', 'canceled'),
+(30, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED PANTS - CREAM BEIGE (1), OAKSHADE WIDE PANTS (3), DBTK SLANT BODY BAG (3)', 14250.00, '2025-05-18 18:56:22', 'Pending'),
+(31, 16, 'Ryan Lozana', 2147483647, 'ral531715@gmail.com', 'Gcash', '146 Langka Modesta st., langka Meycauayan Bulacan Philippines', 'D-SPARK PANELED PANTS - CREAM BEIGE (1)', 2700.00, '2025-05-18 19:09:58', 'shipped');
 
 -- --------------------------------------------------------
 
@@ -188,17 +202,25 @@ INSERT INTO `order_history` (`id`, `order_id`, `status`, `notes`, `updated_by`, 
 --
 
 CREATE TABLE `order_items` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `order_id` int(10) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
   `product_name` varchar(255) NOT NULL,
-  `product_description` text DEFAULT NULL,
-  `product_category` varchar(100) NOT NULL,
-  `product_image_url` varchar(255) DEFAULT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `quantity` int(10) UNSIGNED NOT NULL DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `quantity` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `quantity`, `price`) VALUES
+(1, 29, 0, 'CIPHER STREAK CREWNECK - BROWN CREAM', 5, 2300.00),
+(2, 29, 0, 'HYPER GARAGE STICKER PACK', 5, 350.00),
+(3, 30, 0, 'D-SPARK PANELED PANTS - CREAM BEIGE', 1, 2700.00),
+(4, 30, 0, 'OAKSHADE WIDE PANTS', 3, 2500.00),
+(5, 30, 0, 'DBTK SLANT BODY BAG', 3, 1350.00),
+(6, 31, 0, 'D-SPARK PANELED PANTS - CREAM BEIGE', 1, 2700.00);
 
 -- --------------------------------------------------------
 
@@ -330,7 +352,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `user_type`, `image`, `p
 (13, 'Zeck', 'Zekaido123@gmail.com', '247f8b5944da561cd6c2cda1748fb081', 'admin', '6826ec2ff24dc.jpg', '0', '2025-05-16 07:21:33', 'Active', 0, 0),
 (14, 'Ryan Lozana', 'ral5131715@gmail.com', '25d55ad283aa400af464c76d713c07ad', 'user', 'Ace.jpg', '09166245138', '2025-05-16 07:21:33', 'Active', 0, 0),
 (15, 'Ryan', 'kazutokir@gmail.com', '25f9e794323b453885f5181f1b624d0b', 'user', '205d97f5-14af-4ff4-b3d8-dadcb3bc217c.jfif', '9606202043', '2025-05-16 07:37:25', 'Active', 0, 9992700),
-(16, 'Zekkkkkk', 'Zekaido13@gmail.com', '247f8b5944da561cd6c2cda1748fb081', 'user', 'Ace.jpg', '0921420397', '2025-05-16 18:52:03', 'Active', 0, 9960200);
+(16, 'Zekkkkkk', 'Zekaido13@gmail.com', '247f8b5944da561cd6c2cda1748fb081', 'user', 'Ace.jpg', '0921420397', '2025-05-16 18:52:03', 'Active', 0, 9917450);
 
 --
 -- Indexes for dumped tables
@@ -376,8 +398,8 @@ ALTER TABLE `order_history`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `idx_order_id` (`order_id`),
+  ADD KEY `idx_product_id` (`product_id`);
 
 --
 -- Indexes for table `products`
@@ -399,13 +421,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `admin_logs`
 --
 ALTER TABLE `admin_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -417,7 +439,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `order_history`
@@ -429,7 +451,7 @@ ALTER TABLE `order_history`
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `products`

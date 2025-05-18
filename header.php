@@ -46,7 +46,9 @@ $base_url = '/clonr/';
     <?php if ($user_data): ?>
         <img src="<?= $base_url; ?>uploaded_img/<?= htmlspecialchars($user_data['image'] ?? 'default.png'); ?>" alt="Profile Image">
         <p><?= htmlspecialchars($user_data['name'] ?? 'Guest'); ?></p>
-        <a href="<?= $base_url; ?>update_profile.php" class="btn">update profile</a>
+        <a href="<?= $base_url; ?>update_profile.php" class="btn" title="Update Profile">
+            <i class="bi bi-person-circle"></i>
+        </a>
        <a href="<?= $base_url; ?>products/payment/cart.php" class="btn">
         <i class="bi bi-cart"></i> </a>
         <a href="<?= $base_url; ?>history.php" class="btn" title="Order History">

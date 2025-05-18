@@ -174,3 +174,29 @@ main {
         gap: 6px;
     }
 }
+
+.receipt-link.completed {
+    color: #28a745;
+}
+.receipt-link.shipped {
+    color: #17a2b8;
+}
+.receipt-link.processing {
+    color: #ffc107;
+}
+.receipt-link.pending {
+    color: #6c757d;
+}
+.receipt-link.canceled {
+    color: #dc3545;
+}
+
+.action-button.cancel-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
