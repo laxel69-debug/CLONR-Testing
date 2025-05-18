@@ -6,16 +6,9 @@ if (!isset($_SESSION['admin_id'])) {
     header("Location: ../login.php");
     exit();
 }
+
 // Display operation status if set
-if (isset($_SESSION['operation_status'])) {
-    $status = $_SESSION['operation_status'];
-    if ($status['success']) {
-        echo '<div class="alert success">' . htmlspecialchars($status['message']) . '</div>';
-    } else {
-        echo '<div class="alert error">' . htmlspecialchars($status['message']) . '</div>';
-    }
-    unset($_SESSION['operation_status']); // Clear the status
-}
+
 
 // Fetch all users for the dropdown
 $users = [];
@@ -215,6 +208,24 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .btn-primary:hover {
             background-color: #2563EB;
         }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
     </style>
 </head>
 <body>
@@ -237,7 +248,30 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <main class="admin-main">
         <div class="admin-container">
             <h1 class="admin-title">Message Center</h1>
-            
+            <?php // Display success/error messages
+                        if (isset($_SESSION['success'])) {
+                            echo '<div class="alert alert-success">'.htmlspecialchars($_SESSION['success']).'</div>';
+                            unset($_SESSION['success']);
+                        }
+
+                        if (isset($_SESSION['error'])) {
+                            echo '<div class="alert alert-danger">'.htmlspecialchars($_SESSION['error']).'</div>';
+                            unset($_SESSION['error']);
+                        }
+
+
+                        if (isset($_SESSION['operation_status'])) {
+                            $status = $_SESSION['operation_status'];
+                            if ($status['success']) {
+                                echo '<div class="alert success">' . htmlspecialchars($status['message']) . '</div>';
+                            } else {
+                                echo '<div class="alert error">' . htmlspecialchars($status['message']) . '</div>';
+                            }
+                            unset($_SESSION['operation_status']); // Clear the status
+                        }
+                        
+                        
+                        ?>
             <!-- Admin Message Form -->
             <div class="message-form">
                 <h2>Send Message to User</h2>
@@ -253,6 +287,7 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    
                     
                     <div class="form-group">
                         <label for="subject">Subject:</label>

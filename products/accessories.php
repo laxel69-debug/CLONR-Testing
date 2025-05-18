@@ -33,6 +33,8 @@ try {
         <title>Accessories - CLONR</title>
         <link rel="stylesheet" href="../global.css"/>
         <link rel="stylesheet" href="products.css">
+        
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         </head>
 
