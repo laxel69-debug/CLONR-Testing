@@ -118,6 +118,7 @@ if (isset($_POST['update_profile'])) {
             
         </div>
     </header>
+    <hr class="custom-hr">
     <?php if (!empty($message)): ?>
     <div class="messages">
         <?php foreach ($message as $msg): ?>

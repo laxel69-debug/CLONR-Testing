@@ -44,8 +44,6 @@ receipt > home(added)
 Optional
 + 40 shipping or no shipping fee (free)
 
-
-
 Admin: 
 add product(wa)
 fix recent orders (not yet)
