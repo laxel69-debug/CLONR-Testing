@@ -488,6 +488,59 @@ ALTER TABLE `messages`
 ALTER TABLE `order_history`
   ADD CONSTRAINT `order_history_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   ADD CONSTRAINT `order_history_ibfk_2` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`);
+
+
+--
+-- Add table `reviews` including constraints
+--
+
+CREATE TABLE `reviews` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `product_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `rating` int(10) UNSIGNED NOT NULL,
+  `review_text` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`id`, `product_id`, `user_id`, `rating`, `review_text`, `created_at`) VALUES
+(1, 12, 1, 5, 'good jacket lmao', '2025-05-19 07:05:43'),
+(2, 12, 1, 5, 'nigma balls', '2025-05-19 07:21:22'),
+(3, 12, 999, 2, 'magic man', '2025-05-19 07:26:25'),
+(4, 37, 999, 4, 'wow', '2025-05-19 07:41:15'),
+(5, 34, 999, 5, 'W drip cuh', '2025-05-19 07:42:32');
+
+
+--
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+
+
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
