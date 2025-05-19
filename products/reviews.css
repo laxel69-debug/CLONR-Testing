@@ -1,0 +1,203 @@
+
+
+
+.reviews-section {
+    padding: 20px 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    font-style: normal;
+}
+
+
+.reviews-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+
+#toggle-review-form {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#toggle-review-form:hover {
+    background-color: #0056b3;
+}
+
+
+#review-form-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+
+#review-form-container h4 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+
+.reviews-section .form-group {
+    margin-bottom: 15px;
+}
+
+.reviews-section .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.reviews-section .form-group input[type="text"],
+.reviews-section .form-group select,
+.reviews-section .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+
+.reviews-section .form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.reviews-section .form-group label[for="post_anonymous"] {
+    display: inline-block;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+
+
+.reviews-section .review-form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 20px;
+}
+
+.reviews-section .review-form button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+
+
+.existing-reviews {
+   padding: 30px;
+}
+
+
+.review-item {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.review-item p {
+    /* Existing styles like margin, line-height */
+    margin-top: 0;
+    margin-bottom: 5px;
+    line-height: 1.5;
+
+    /* Add this line to ensure the text is not italic */
+    font-style: normal;
+}
+
+
+.review-item p strong {
+    color: #007bff;
+}
+
+.review-item .review-date {
+    font-size: 0.9em;
+    color: #777;
+    margin-left: 10px;
+}
+
+
+.review-item-separator {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin: 20px 0;
+}
+
+
+.existing-reviews p {
+    text-align: center;
+    color: #777;
+    font-style: normal;
+}
+
+
+
+.review-message {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    text-align: center;
+}
+
+.review-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.review-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.review-message.validation-errors {
+     background-color: #fff3cd;
+     color: #856404;
+     border-color: #ffeeba;
+     text-align: left;
+}
+
+.review-message.validation-errors ul {
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-left: 30px;
+}
+
+#toggle-review-form {
+    background-color: black;
+    color: white;
+}
+
+#toggle-review-form:hover {
+    background-color: rgb(61, 61, 61);
+    
+}

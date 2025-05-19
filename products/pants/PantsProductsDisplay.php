@@ -1,11 +1,85 @@
 <?php
 
-include '../../db_connect.php'; 
-
+include '../../config.php'; 
 
 if (!isset($conn) || !$conn) {
-     error_log("Database connection is not established in jacketProductsDisplay.php");
+     error_log("Database connection is not established via config.php in product display page");
      die("Database connection error. Please check logs.");
+}
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$loggedInUserId = $_SESSION['user_id'] ?? null;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
+    
+    if (!$loggedInUserId) {
+        $_SESSION['review_error'] = "You must be logged in to leave a review.";
+        
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
+    }
+    $productId = $_POST['product_id'] ?? null;
+    $rating = $_POST['rating'] ?? null;
+    $reviewText = trim($_POST['review_text'] ?? '');
+    $postAnonymous = isset($_POST['post_anonymous']); 
+
+    
+    
+    
+    $anonymousUserId = 999; 
+    $userIdToStore = $postAnonymous ? $anonymousUserId : $loggedInUserId;
+
+
+    
+    $errors = [];
+    if (empty($productId) || !is_numeric($productId)) {
+        $errors[] = "Invalid product ID.";
+    }
+     
+    if (!isset($rating) || !is_numeric($rating) || $rating < 1 || $rating > 5) {
+        $errors[] = "A rating between 1 and 5 is required.";
+    }
+     
+    if (!$userIdToStore || !is_numeric($userIdToStore)) {
+         $errors[] = "Could not determine valid user ID for review submission. Anonymous user ID might be misconfigured.";
+    }
+
+
+    if (empty($errors)) {
+        
+        $sql = "INSERT INTO reviews (product_id, user_id, rating, review_text) VALUES (:product_id, :user_id, :rating, :review_text)";
+        $stmt = $conn->prepare($sql);
+
+        try {
+            $stmt->execute([
+                ':product_id' => $productId,
+                ':user_id' => $userIdToStore,
+                ':rating' => $rating,
+                ':review_text' => empty($reviewText) ? null : $reviewText 
+            ]);
+
+            
+            $_SESSION['review_success'] = "Your review has been submitted!";
+            
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit();
+
+        } catch (\PDOException $e) {
+            error_log("Review Submission Error: " . $e->getMessage());
+            $_SESSION['review_error'] = "Error submitting review. Please try again.";
+            
+             header("Location: " . $_SERVER['REQUEST_URI']);
+             exit();
+        }
+    } else {
+        
+        $_SESSION['review_errors'] = $errors;
+         header("Location: " . $_SERVER['REQUEST_URI']);
+         exit();
+    }
 }
 
 
@@ -47,13 +121,16 @@ if ($productId) {
              if (empty($allImages)) {
                  
                  
-                 $allImages = ['../path/to/placeholder_image.jpg']; 
+                 
+                 $allImages = ['../../path/to/placeholder_image.jpg']; 
              }
         }
 
     } catch (\PDOException $e) {
-        error_log("Database Query Error in jacketProductsDisplay.php: " . $e->getMessage());
-        die("Sorry, there was an error loading product details.");
+        error_log("Database Query Error fetching product/images in product display page: " . $e->getMessage());
+        
+        
+        $product = null;
     }
 }
 
@@ -63,7 +140,12 @@ if (!$product) {
     echo "<h1>Product Not Found</h1>";
     echo "<p>The requested product could not be found.</p>";
     
-    echo '<p><a href="jackets.php">Back to Jackets</a></p>'; 
+    
+     echo '<p><a href="../jackets.php">Back to Jackets</a></p>'; 
+    
+    unset($_SESSION['review_success']);
+    unset($_SESSION['review_error']);
+    unset($_SESSION['review_errors']);
     exit;
 }
 
@@ -72,8 +154,38 @@ $productName = htmlspecialchars($product['name']);
 $productPrice = number_format($product['price'], 2);
 $productDescription = htmlspecialchars($product['description'] ?? ''); 
 $productCategory = htmlspecialchars($product['category']);
-$mainImageUrl = htmlspecialchars($allImages[0] ?? '../path/to/placeholder_image.jpg'); 
 
+
+$mainImageUrl = htmlspecialchars($allImages[0] ?? '../../path/to/placeholder_image.jpg'); 
+
+
+
+$reviews = [];
+try {
+    $sqlReviews = "SELECT r.rating, r.review_text, r.created_at, u.name AS reviewer_name
+                   FROM reviews r
+                   JOIN users u ON r.user_id = u.id
+                   WHERE r.product_id = :product_id
+                   ORDER BY r.created_at DESC";
+    $stmtReviews = $conn->prepare($sqlReviews);
+    $stmtReviews->execute([':product_id' => $productId]);
+    $reviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
+} catch (\PDOException $e) {
+     error_log("Error fetching reviews for product ID " . $productId . " in product display page: " . $e->getMessage());
+     
+     echo "<p>Could not load reviews at this time.</p>";
+}
+
+
+
+$reviewSuccess = $_SESSION['review_success'] ?? null;
+$reviewError = $_SESSION['review_error'] ?? null;
+$reviewErrors = $_SESSION['review_errors'] ?? null;
+
+
+unset($_SESSION['review_success']);
+unset($_SESSION['review_error']);
+unset($_SESSION['review_errors']);
 
 
 
@@ -86,10 +198,9 @@ $mainImageUrl = htmlspecialchars($allImages[0] ?? '../path/to/placeholder_image.
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <title><?php echo $productName; ?> - CLONR</title> <link rel="stylesheet" href="../../global.css"/> <link rel="stylesheet" href="../addtocart.css"> <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <title><?php echo $productName; ?> - CLONR</title> <link rel="stylesheet" href="../../global.css"/> <link rel="stylesheet" href="../addtocart.css">
          <link rel="stylesheet" href="product_detail.css">
+         <link rel="stylesheet" href="../reviews.css">
     </head>
 
     <body>
@@ -123,7 +234,7 @@ $mainImageUrl = htmlspecialchars($allImages[0] ?? '../path/to/placeholder_image.
           <h2><?php echo $productCategory; ?></h2> <h1><?php echo $productName; ?></h1> <p>₱<?php echo $productPrice; ?></p> <?php if (!empty($productDescription)): ?>
               <div class="product-description">
                   <h3>Description</h3>
-                  <p><?php echo $productDescription; ?></p> </div>
+                  <p><?php echo nl2br(htmlspecialchars($productDescription)); ?></p> </div>
           <?php endif; ?>
 
           <label for="size">Size:</label>
@@ -156,6 +267,96 @@ $mainImageUrl = htmlspecialchars($allImages[0] ?? '../path/to/placeholder_image.
 
       <hr class="custom-hr">
 
+      <section class="reviews-section">
+          <h3>Customer Reviews</h3>
+          <?php
+?>
+          <?php if (isset($reviewSuccess) && $reviewSuccess): ?>
+              <div class="review-message success"><?php echo htmlspecialchars($reviewSuccess); ?></div>
+          <?php endif; ?>
+          <?php if (isset($reviewError) && $reviewError): ?>
+              <div class="review-message error"><?php echo htmlspecialchars($reviewError); ?></div>
+          <?php endif; ?>
+           <?php if (isset($reviewErrors) && $reviewErrors): ?>
+               <div class="review-message validation-errors">
+                   <p>Please fix the following errors:</p>
+                   <ul>
+                       <?php foreach ($reviewErrors as $error): ?>
+                           <li><?php echo htmlspecialchars($error); ?></li>
+                       <?php endforeach; ?>
+                   </ul>
+               </div>
+           <?php endif; ?>
+          <?php // --- End PHP to display session messages --- ?>
+
+
+          <?php
+          // --- PHP to check login status and display button/message ---
+          // You need the PHP variable $loggedInUserId populated from session
+          // in the PHP block at the top of the file.
+          ?>
+          <?php if (isset($loggedInUserId) && $loggedInUserId): ?>
+              <button id="toggle-review-form">Leave a Review</button>
+          <?php else: ?>
+              <p>Please <a href="../../login.php">log in</a> to leave a review.</p> <?php endif; ?>
+          <?php // --- End PHP for login check --- ?>
+
+
+          <div id="review-form-container" style="display: none;">
+              <h4>Submit Your Review</h4>
+              <form action="" method="POST"> <?php // You need the PHP variable $productId populated from $_GET ?>
+                  <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($productId ?? ''); ?>">
+
+                  <div class="form-group">
+                      <label for="rating">Rating:</label>
+                      <select id="rating" name="rating" required>
+                          <option value="">Select a rating</option>
+                          <option value="5">5 Stars</option>
+                          <option value="4">4 Stars</option>
+                          <option value="3">3 Stars</option>
+                          <option value="2">2 Stars</option>
+                          <option value="1">1 Star</option>
+                      </select>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="review_text">Your Review:</label>
+                      <textarea id="review_text" name="review_text" rows="4"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                      <input type="checkbox" id="post_anonymous" name="post_anonymous">
+                      <label for="post_anonymous">Post Anonymously</label>
+                  </div>
+
+                  <button type="submit" name="submit_review">Submit Review</button>
+              </form>
+          </div>
+
+          <div class="existing-reviews">
+              <?php
+              // --- PHP to fetch and display existing reviews ---
+              // You need the PHP variable $reviews populated from the database query
+              // in the PHP block at the top of the file.
+              ?>
+              <?php if (!empty($reviews)): ?>
+                  <?php foreach ($reviews as $review): ?>
+                      <div class="review-item">
+                          <p>
+                              <strong><?php echo htmlspecialchars($review['reviewer_name'] ?? 'Anonymous'); ?></strong> rated it <?php echo htmlspecialchars($review['rating']); ?>/5 stars on <?php echo date('F j, Y', strtotime($review['created_at'])); ?>
+                          </p>
+                          <?php if (!empty($review['review_text'])): ?>
+                              <p>&ldquo;<?php echo nl2br(htmlspecialchars($review['review_text'])); ?>&rdquo;</p> <?php endif; ?>
+                      </div>
+                       <hr class="review-item-separator"> <?php endforeach; ?>
+              <?php else: ?>
+                  <p>No reviews for this product yet.</p> <?php endif; ?>
+              <?php // --- End PHP for displaying reviews --- ?>
+          </div>
+
+      </section>
+
+
       <footer>
         <div class="footer-content">
             <h2>CLONR - Wear the Movement</h2>
@@ -164,9 +365,11 @@ $mainImageUrl = htmlspecialchars($allImages[0] ?? '../path/to/placeholder_image.
         </div>
       </footer>
 
-      <script>
+    <script>
         
-        const images = <?php echo json_encode($allImages); ?>;
+        
+        const images = <?php echo json_encode($allImages ?? []); ?>; 
+
 
         let currentIndex = 0;
         const sliderImage = document.getElementById('slider-image');
@@ -176,28 +379,43 @@ $mainImageUrl = htmlspecialchars($allImages[0] ?? '../path/to/placeholder_image.
             sliderImage.src = images[currentIndex];
         } else {
              
-             sliderImage.src = '../path/to/placeholder_image.jpg'; 
+             
+             sliderImage.src = '../../path/to/placeholder_image.jpg'; 
         }
 
 
         function prevSlide() {
-          if (images.length > 0) {
+          if (images.length > 1) { 
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             sliderImage.src = images[currentIndex];
           }
         }
 
         function nextSlide() {
-          if (images.length > 0) {
+          if (images.length > 1) { 
             currentIndex = (currentIndex + 1) % images.length;
             sliderImage.src = images[currentIndex];
           }
         }
+
+        
+        const toggleButton = document.getElementById('toggle-review-form');
+        const reviewFormContainer = document.getElementById('review-form-container');
+
+        if (toggleButton && reviewFormContainer) {
+            toggleButton.addEventListener('click', function() {
+                const isHidden = reviewFormContainer.style.display === 'none';
+                reviewFormContainer.style.display = isHidden ? 'block' : 'none';
+                toggleButton.textContent = isHidden ? 'Hide Review Form' : 'Leave a Review';
+            });
+        }
+
       </script>
 
       <script src="../../js/cart.js"></script>
 
       <?php
+      
       
       $conn = null;
       ?>
